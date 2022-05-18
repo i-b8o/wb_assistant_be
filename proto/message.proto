@@ -24,8 +24,7 @@ message LoginRequest {
 
 message LoginResponse {
     User user = 1;
-    string jwt = 2;
-	int32 statusCode = 3;
+	int32 statusCode = 2;
 }
 
 message RegisterRequest {
