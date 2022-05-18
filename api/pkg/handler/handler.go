@@ -1,7 +1,8 @@
 package handler
 
 import (
-	"github.com/bogach-ivan/wb_assistant_be/be/api/pkg/service"
+	"github.com/bogach-ivan/wb_assistant_be/api/pkg/service"
+
 	"github.com/gin-gonic/gin"
 )
 

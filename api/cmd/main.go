@@ -3,9 +3,9 @@ package main
 import (
 	"log"
 
-	"github.com/bogach-ivan/wb_assistant_be/be/api"
-	"github.com/bogach-ivan/wb_assistant_be/be/api/pkg/handler"
-	"github.com/bogach-ivan/wb_assistant_be/be/api/pkg/service"
+	"github.com/bogach-ivan/wb_assistant_be/api"
+	"github.com/bogach-ivan/wb_assistant_be/api/pkg/handler"
+	"github.com/bogach-ivan/wb_assistant_be/api/pkg/service"
 	"github.com/spf13/viper"
 )
 

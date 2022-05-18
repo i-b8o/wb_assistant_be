@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option go_package = "./;pb";
+
+import "message.proto";
+
+service AuthService {
+    rpc login(LoginRequest) returns (LoginResponse) {};
+    rpc register(RegisterRequest) returns (RegisterResponse) {};
+    rpc updateVerificationToken(UpdateVerificationTokenRequest) returns (UpdateVerificationTokenResponse) {};
+    rpc confirm(AuthConfirmRequest) returns (AuthConfirmResponse) {};
+    rpc setTokenToPassReset(SetTokenToPassResetRequest) returns (SetTokenToPassResetResponse) {};
+    rpc passReset(PassResetRequest) returns (PassResetResponse) {};
+}
+
+service MailService {
+    rpc confirm(MailConfirmRequest) returns (MailConfirmResponse) {};
+    rpc reset(ResetRequest) returns (ResetResponse) {};    
+}
