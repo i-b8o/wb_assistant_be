@@ -5,7 +5,6 @@ import (
 	"net"
 	"os"
 	"os/signal"
-	"strconv"
 	"syscall"
 
 	"github.com/bogach-ivan/wb_assistant_be/pb"
@@ -47,28 +46,17 @@ func unixSig() {
 	}
 }
 
-var (
-	auth_server_port string
-	db_host          string
-	db_username      string
-	db_password      string
-	db_name          string
-)
-
 func main() {
 	defer recoveryFunction()
 	go unixSig()
-
-	port, err := strconv.Atoi(auth_server_port)
-	if err != nil {
-		logrus.Fatalf("cannot convert %s to int: %v", auth_server_port, err)
-
-	}
+	err := initConfig()
+	port := viper.GetString("grpc:port")
 
 	err = godotenv.Load()
 	if err != nil {
 		logrus.Fatalf("error loading env variables: %s", err.Error())
 	}
+
 	db, err := repo.NewMySQLDB(repo.Config{
 		Host:     viper.GetString("db.host"),
 		Username: viper.GetString("db.username"),
@@ -86,7 +74,7 @@ func main() {
 	server := authservice.NewAuthService(*repo)
 	pb.RegisterAuthServiceServer(grpcServer, server)
 
-	address := fmt.Sprintf("0.0.0.0:%d", port)
+	address := fmt.Sprintf("0.0.0.0:%s", port)
 	listener, err := net.Listen("tcp", address)
 	if err != nil {
 		logrus.Fatal("cannot start server: ", err)
@@ -97,4 +85,9 @@ func main() {
 	if err != nil {
 		logrus.Fatal("cannot start server: ", err)
 	}
+}
+func initConfig() error {
+	viper.AddConfigPath("configs")
+	viper.SetConfigName("config")
+	return viper.ReadInConfig()
 }

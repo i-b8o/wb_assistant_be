@@ -18,6 +18,7 @@ func main() {
 
 		logrus.Fatalf("error initializing configs: %s", err.Error())
 	}
+	fmt.Println(viper.GetString("db.dbname"))
 	// GRPC client creation
 	addr := fmt.Sprintf("%s:%s", viper.GetString("grpc.ip"), viper.GetString("grpc.port"))
 	clientConn, err := grpc.Dial(addr, grpc.WithInsecure())
