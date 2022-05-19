@@ -2,9 +2,9 @@ package authservice
 
 import (
 	"context"
-	"log"
 
 	"github.com/bogach-ivan/wb_assistant_be/pb"
+	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -27,12 +27,12 @@ func NewServer(store Store) *Server {
 func (server *Server) SetTokenToPassReset(ctx context.Context, req *pb.SetTokenToPassResetRequest) (*pb.SetTokenToPassResetResponse, error) {
 	// check if the request is cancelled by the client
 	if ctx.Err() == context.Canceled {
-		log.Print("request is canceled")
+		logrus.Print("request is canceled")
 		return nil, status.Error(codes.Canceled, "request is canceled")
 	}
 	// check if the request is timeout
 	if ctx.Err() == context.DeadlineExceeded {
-		log.Print("deadline is exceed")
+		logrus.Print("deadline is exceed")
 		return nil, status.Error(codes.DeadlineExceeded, "deadline is exceeded")
 	}
 	resp := server.store.SetTokenToPassReset(req.Email, req.Token)
@@ -41,12 +41,12 @@ func (server *Server) SetTokenToPassReset(ctx context.Context, req *pb.SetTokenT
 func (server *Server) PassReset(ctx context.Context, req *pb.PassResetRequest) (*pb.PassResetResponse, error) {
 	// / check if the request is cancelled by the client
 	if ctx.Err() == context.Canceled {
-		log.Print("request is canceled")
+		logrus.Print("request is canceled")
 		return nil, status.Error(codes.Canceled, "request is canceled")
 	}
 	// check if the request is timeout
 	if ctx.Err() == context.DeadlineExceeded {
-		log.Print("deadline is exceed")
+		logrus.Print("deadline is exceed")
 		return nil, status.Error(codes.DeadlineExceeded, "deadline is exceeded")
 	}
 	resp := server.store.PassReset(req.Email, req.NewPass, req.Token)
@@ -56,12 +56,12 @@ func (server *Server) PassReset(ctx context.Context, req *pb.PassResetRequest) (
 func (server *Server) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.RegisterResponse, error) {
 	// check if the request is cancelled by the client
 	if ctx.Err() == context.Canceled {
-		log.Print("request is canceled")
+		logrus.Print("request is canceled")
 		return nil, status.Error(codes.Canceled, "request is canceled")
 	}
 	// check if the request is timeout
 	if ctx.Err() == context.DeadlineExceeded {
-		log.Print("deadline is exceed")
+		logrus.Print("deadline is exceed")
 		return nil, status.Error(codes.DeadlineExceeded, "deadline is exceeded")
 	}
 	resp := server.store.Register(req.Username, req.Email, req.Pass, req.Token)
@@ -72,12 +72,12 @@ func (server *Server) Register(ctx context.Context, req *pb.RegisterRequest) (*p
 func (server *Server) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResponse, error) {
 	// check if the request is cancelled by the client
 	if ctx.Err() == context.Canceled {
-		log.Print("request is canceled")
+		logrus.Print("request is canceled")
 		return nil, status.Error(codes.Canceled, "request is canceled")
 	}
 	// check if the request is timeout
 	if ctx.Err() == context.DeadlineExceeded {
-		log.Print("deadline is exceed")
+		logrus.Print("deadline is exceed")
 		return nil, status.Error(codes.DeadlineExceeded, "deadline is exceeded")
 	}
 	resp := server.store.Login(req.Email, req.Password)
@@ -88,12 +88,12 @@ func (server *Server) Login(ctx context.Context, req *pb.LoginRequest) (*pb.Logi
 func (server *Server) UpdateVerificationToken(ctx context.Context, req *pb.UpdateVerificationTokenRequest) (*pb.UpdateVerificationTokenResponse, error) {
 	// check if the request is cancelled by the client
 	if ctx.Err() == context.Canceled {
-		log.Print("request is canceled")
+		logrus.Print("request is canceled")
 		return nil, status.Error(codes.Canceled, "request is canceled")
 	}
 	// check if the request is timeout
 	if ctx.Err() == context.DeadlineExceeded {
-		log.Print("deadline is exceed")
+		logrus.Print("deadline is exceed")
 		return nil, status.Error(codes.DeadlineExceeded, "deadline is exceeded")
 	}
 	resp := server.store.UpdateVerificationToken(req.Email, req.Pass, req.Token)
@@ -104,12 +104,12 @@ func (server *Server) UpdateVerificationToken(ctx context.Context, req *pb.Updat
 func (server *Server) Confirm(ctx context.Context, req *pb.AuthConfirmRequest) (*pb.AuthConfirmResponse, error) {
 	// check if the request is cancelled by the client
 	if ctx.Err() == context.Canceled {
-		log.Print("request is canceled")
+		logrus.Print("request is canceled")
 		return nil, status.Error(codes.Canceled, "request is canceled")
 	}
 	// check if the request is timeout
 	if ctx.Err() == context.DeadlineExceeded {
-		log.Print("deadline is exceed")
+		logrus.Print("deadline is exceed")
 		return nil, status.Error(codes.DeadlineExceeded, "deadline is exceeded")
 	}
 	resp := server.store.Confirm(req.Token)

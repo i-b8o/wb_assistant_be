@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net"
 	"os"
 	"os/signal"
@@ -12,6 +11,7 @@ import (
 	"github.com/bogach-ivan/wb_assistant_be/pb"
 	authservice "github.com/bogach-ivan/wb_assistant_be/services/auth/service"
 	"github.com/i-rm/nonsense"
+	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 )
 
@@ -58,7 +58,7 @@ func main() {
 
 	port, err := strconv.Atoi(auth_server_port)
 	if err != nil {
-		log.Fatalf("cannot convert %s to int: %v", auth_server_port, err)
+		logrus.Fatalf("cannot convert %s to int: %v", auth_server_port, err)
 
 	}
 
@@ -71,12 +71,12 @@ func main() {
 	address := fmt.Sprintf("0.0.0.0:%d", port)
 	listener, err := net.Listen("tcp", address)
 	if err != nil {
-		log.Fatal("cannot start server: ", err)
+		logrus.Fatal("cannot start server: ", err)
 	}
-	log.Printf("start server on address %s", address)
+	logrus.Printf("start server on address %s", address)
 
 	err = grpcServer.Serve(listener)
 	if err != nil {
-		log.Fatal("cannot start server: ", err)
+		logrus.Fatal("cannot start server: ", err)
 	}
 }

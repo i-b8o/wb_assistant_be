@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net"
 	"os"
 	"os/signal"
@@ -10,6 +9,7 @@ import (
 	"syscall"
 
 	"github.com/i-rm/nonsense"
+	"github.com/sirupsen/logrus"
 
 	confirmservice "github.com/i-rm/wb/be/mail/service"
 	"github.com/i-rm/wb/be/pb"
@@ -53,7 +53,7 @@ func main() {
 
 	port, err := strconv.Atoi(server_port)
 	if err != nil {
-		log.Fatalf("cannot convert %s to int: %v", server_port, err)
+		logrus.Fatalf("cannot convert %s to int: %v", server_port, err)
 
 	}
 
@@ -66,12 +66,12 @@ func main() {
 	address := fmt.Sprintf("0.0.0.0:%d", port)
 	listener, err := net.Listen("tcp", address)
 	if err != nil {
-		log.Fatal("cannot start server: ", err)
+		logrus.Fatal("cannot start server: ", err)
 	}
-	log.Printf("start server on address %s", address)
+	logrus.Printf("start server on address %s", address)
 
 	err = grpcServer.Serve(listener)
 	if err != nil {
-		log.Fatal("cannot start server: ", err)
+		logrus.Fatal("cannot start server: ", err)
 	}
 }

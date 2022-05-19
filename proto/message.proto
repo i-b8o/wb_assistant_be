@@ -10,86 +10,9 @@ message User {
 	string Expires = 5;
 }
 
-message Verified {
-	int32 Verified = 1;
-	uint32 UserID   = 2;
-	string Token    = 3;
+message CreateUser {
+    int32 Id = 1;
 }
 
 
-message LoginRequest {
-    string Email = 1;
-    string Password =2 ;
-}
-
-message LoginResponse {
-    User user = 1;
-	int32 statusCode = 2;
-}
-
-message RegisterRequest {
-    string username = 1;
-    string email = 2;
-    string pass = 3;
-	string token = 4;
-}
-
-message RegisterResponse {
-	User user = 1;
-	int32 statusCode = 2;
-}
-
-message AuthConfirmRequest {
-	string token = 1;
-}
-
-message AuthConfirmResponse {
-	int32 statusCode = 1;
-}
-
-message	UpdateVerificationTokenRequest {
-	string email = 1;
-    string pass = 2;
-	string token = 3;
-}
-message	UpdateVerificationTokenResponse {
-	int32 statusCode = 1;
-}
-
-
-message MailConfirmRequest {
-	string url = 1;
-	string email = 2;
-	string pass = 3;
-}
-message MailConfirmResponse {
-	int32 statusCode = 1;
-}
-
-message ResetRequest {
-	string url = 1;
-	string email = 2;
-}
-message ResetResponse {
-	int32 statusCode = 1;
-}
-
-message	SetTokenToPassResetRequest {
-	string email = 1; 
-	string token = 2;
-}
-
-message	SetTokenToPassResetResponse {
-	int32 statusCode = 1;
-}
-
-message	PassResetRequest {
-	string email = 1; 
-	string token = 2;
-	string newPass = 3;
-}
-
-message	PassResetResponse {
-	int32 statusCode = 1;
-}
 

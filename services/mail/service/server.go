@@ -2,9 +2,9 @@ package mailservice
 
 import (
 	"context"
-	"log"
 
 	"github.com/i-rm/wb/be/pb"
+	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -28,12 +28,12 @@ func NewServer(post Post) *Server {
 func (server *Server) Confirm(ctx context.Context, req *pb.MailConfirmRequest) (*pb.MailConfirmResponse, error) {
 	// check if the request is cancelled by the client
 	if ctx.Err() == context.Canceled {
-		log.Print("request is canceled")
+		logrus.Print("request is canceled")
 		return nil, status.Error(codes.Canceled, "request is canceled")
 	}
 	// check if the request is timeout
 	if ctx.Err() == context.DeadlineExceeded {
-		log.Print("deadline is exceed")
+		logrus.Print("deadline is exceed")
 		return nil, status.Error(codes.DeadlineExceeded, "deadline is exceeded")
 	}
 	resp := server.post.Confirm(req.Url, req.Email, req.Pass)
@@ -43,12 +43,12 @@ func (server *Server) Confirm(ctx context.Context, req *pb.MailConfirmRequest) (
 func (server *Server) Reset(ctx context.Context, req *pb.ResetRequest) (*pb.ResetResponse, error) {
 	// check if the request is cancelled by the client
 	if ctx.Err() == context.Canceled {
-		log.Print("request is canceled")
+		logrus.Print("request is canceled")
 		return nil, status.Error(codes.Canceled, "request is canceled")
 	}
 	// check if the request is timeout
 	if ctx.Err() == context.DeadlineExceeded {
-		log.Print("deadline is exceed")
+		logrus.Print("deadline is exceed")
 		return nil, status.Error(codes.DeadlineExceeded, "deadline is exceeded")
 	}
 	resp := server.post.Reset(req.Url, req.Email)

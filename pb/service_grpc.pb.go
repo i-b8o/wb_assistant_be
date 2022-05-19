@@ -22,12 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AuthServiceClient interface {
-	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
-	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
-	UpdateVerificationToken(ctx context.Context, in *UpdateVerificationTokenRequest, opts ...grpc.CallOption) (*UpdateVerificationTokenResponse, error)
-	Confirm(ctx context.Context, in *AuthConfirmRequest, opts ...grpc.CallOption) (*AuthConfirmResponse, error)
-	SetTokenToPassReset(ctx context.Context, in *SetTokenToPassResetRequest, opts ...grpc.CallOption) (*SetTokenToPassResetResponse, error)
-	PassReset(ctx context.Context, in *PassResetRequest, opts ...grpc.CallOption) (*PassResetResponse, error)
+	CreateUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*CreateUser, error)
 }
 
 type authServiceClient struct {
@@ -38,54 +33,9 @@ func NewAuthServiceClient(cc grpc.ClientConnInterface) AuthServiceClient {
 	return &authServiceClient{cc}
 }
 
-func (c *authServiceClient) Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error) {
-	out := new(LoginResponse)
-	err := c.cc.Invoke(ctx, "/AuthService/login", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *authServiceClient) Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error) {
-	out := new(RegisterResponse)
-	err := c.cc.Invoke(ctx, "/AuthService/register", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *authServiceClient) UpdateVerificationToken(ctx context.Context, in *UpdateVerificationTokenRequest, opts ...grpc.CallOption) (*UpdateVerificationTokenResponse, error) {
-	out := new(UpdateVerificationTokenResponse)
-	err := c.cc.Invoke(ctx, "/AuthService/updateVerificationToken", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *authServiceClient) Confirm(ctx context.Context, in *AuthConfirmRequest, opts ...grpc.CallOption) (*AuthConfirmResponse, error) {
-	out := new(AuthConfirmResponse)
-	err := c.cc.Invoke(ctx, "/AuthService/confirm", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *authServiceClient) SetTokenToPassReset(ctx context.Context, in *SetTokenToPassResetRequest, opts ...grpc.CallOption) (*SetTokenToPassResetResponse, error) {
-	out := new(SetTokenToPassResetResponse)
-	err := c.cc.Invoke(ctx, "/AuthService/setTokenToPassReset", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *authServiceClient) PassReset(ctx context.Context, in *PassResetRequest, opts ...grpc.CallOption) (*PassResetResponse, error) {
-	out := new(PassResetResponse)
-	err := c.cc.Invoke(ctx, "/AuthService/passReset", in, out, opts...)
+func (c *authServiceClient) CreateUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*CreateUser, error) {
+	out := new(CreateUser)
+	err := c.cc.Invoke(ctx, "/AuthService/createUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -96,12 +46,7 @@ func (c *authServiceClient) PassReset(ctx context.Context, in *PassResetRequest,
 // All implementations must embed UnimplementedAuthServiceServer
 // for forward compatibility
 type AuthServiceServer interface {
-	Login(context.Context, *LoginRequest) (*LoginResponse, error)
-	Register(context.Context, *RegisterRequest) (*RegisterResponse, error)
-	UpdateVerificationToken(context.Context, *UpdateVerificationTokenRequest) (*UpdateVerificationTokenResponse, error)
-	Confirm(context.Context, *AuthConfirmRequest) (*AuthConfirmResponse, error)
-	SetTokenToPassReset(context.Context, *SetTokenToPassResetRequest) (*SetTokenToPassResetResponse, error)
-	PassReset(context.Context, *PassResetRequest) (*PassResetResponse, error)
+	CreateUser(context.Context, *User) (*CreateUser, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -109,23 +54,8 @@ type AuthServiceServer interface {
 type UnimplementedAuthServiceServer struct {
 }
 
-func (UnimplementedAuthServiceServer) Login(context.Context, *LoginRequest) (*LoginResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
-}
-func (UnimplementedAuthServiceServer) Register(context.Context, *RegisterRequest) (*RegisterResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
-}
-func (UnimplementedAuthServiceServer) UpdateVerificationToken(context.Context, *UpdateVerificationTokenRequest) (*UpdateVerificationTokenResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateVerificationToken not implemented")
-}
-func (UnimplementedAuthServiceServer) Confirm(context.Context, *AuthConfirmRequest) (*AuthConfirmResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Confirm not implemented")
-}
-func (UnimplementedAuthServiceServer) SetTokenToPassReset(context.Context, *SetTokenToPassResetRequest) (*SetTokenToPassResetResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SetTokenToPassReset not implemented")
-}
-func (UnimplementedAuthServiceServer) PassReset(context.Context, *PassResetRequest) (*PassResetResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PassReset not implemented")
+func (UnimplementedAuthServiceServer) CreateUser(context.Context, *User) (*CreateUser, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
 
@@ -140,110 +70,20 @@ func RegisterAuthServiceServer(s grpc.ServiceRegistrar, srv AuthServiceServer) {
 	s.RegisterService(&AuthService_ServiceDesc, srv)
 }
 
-func _AuthService_Login_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LoginRequest)
+func _AuthService_CreateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(User)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AuthServiceServer).Login(ctx, in)
+		return srv.(AuthServiceServer).CreateUser(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/AuthService/login",
+		FullMethod: "/AuthService/createUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).Login(ctx, req.(*LoginRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _AuthService_Register_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RegisterRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AuthServiceServer).Register(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/AuthService/register",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).Register(ctx, req.(*RegisterRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _AuthService_UpdateVerificationToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateVerificationTokenRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AuthServiceServer).UpdateVerificationToken(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/AuthService/updateVerificationToken",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).UpdateVerificationToken(ctx, req.(*UpdateVerificationTokenRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _AuthService_Confirm_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AuthConfirmRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AuthServiceServer).Confirm(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/AuthService/confirm",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).Confirm(ctx, req.(*AuthConfirmRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _AuthService_SetTokenToPassReset_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SetTokenToPassResetRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AuthServiceServer).SetTokenToPassReset(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/AuthService/setTokenToPassReset",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).SetTokenToPassReset(ctx, req.(*SetTokenToPassResetRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _AuthService_PassReset_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PassResetRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AuthServiceServer).PassReset(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/AuthService/passReset",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).PassReset(ctx, req.(*PassResetRequest))
+		return srv.(AuthServiceServer).CreateUser(ctx, req.(*User))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -256,150 +96,8 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*AuthServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "login",
-			Handler:    _AuthService_Login_Handler,
-		},
-		{
-			MethodName: "register",
-			Handler:    _AuthService_Register_Handler,
-		},
-		{
-			MethodName: "updateVerificationToken",
-			Handler:    _AuthService_UpdateVerificationToken_Handler,
-		},
-		{
-			MethodName: "confirm",
-			Handler:    _AuthService_Confirm_Handler,
-		},
-		{
-			MethodName: "setTokenToPassReset",
-			Handler:    _AuthService_SetTokenToPassReset_Handler,
-		},
-		{
-			MethodName: "passReset",
-			Handler:    _AuthService_PassReset_Handler,
-		},
-	},
-	Streams:  []grpc.StreamDesc{},
-	Metadata: "service.proto",
-}
-
-// MailServiceClient is the client API for MailService service.
-//
-// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type MailServiceClient interface {
-	Confirm(ctx context.Context, in *MailConfirmRequest, opts ...grpc.CallOption) (*MailConfirmResponse, error)
-	Reset(ctx context.Context, in *ResetRequest, opts ...grpc.CallOption) (*ResetResponse, error)
-}
-
-type mailServiceClient struct {
-	cc grpc.ClientConnInterface
-}
-
-func NewMailServiceClient(cc grpc.ClientConnInterface) MailServiceClient {
-	return &mailServiceClient{cc}
-}
-
-func (c *mailServiceClient) Confirm(ctx context.Context, in *MailConfirmRequest, opts ...grpc.CallOption) (*MailConfirmResponse, error) {
-	out := new(MailConfirmResponse)
-	err := c.cc.Invoke(ctx, "/MailService/confirm", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *mailServiceClient) Reset(ctx context.Context, in *ResetRequest, opts ...grpc.CallOption) (*ResetResponse, error) {
-	out := new(ResetResponse)
-	err := c.cc.Invoke(ctx, "/MailService/reset", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-// MailServiceServer is the server API for MailService service.
-// All implementations must embed UnimplementedMailServiceServer
-// for forward compatibility
-type MailServiceServer interface {
-	Confirm(context.Context, *MailConfirmRequest) (*MailConfirmResponse, error)
-	Reset(context.Context, *ResetRequest) (*ResetResponse, error)
-	mustEmbedUnimplementedMailServiceServer()
-}
-
-// UnimplementedMailServiceServer must be embedded to have forward compatible implementations.
-type UnimplementedMailServiceServer struct {
-}
-
-func (UnimplementedMailServiceServer) Confirm(context.Context, *MailConfirmRequest) (*MailConfirmResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Confirm not implemented")
-}
-func (UnimplementedMailServiceServer) Reset(context.Context, *ResetRequest) (*ResetResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Reset not implemented")
-}
-func (UnimplementedMailServiceServer) mustEmbedUnimplementedMailServiceServer() {}
-
-// UnsafeMailServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to MailServiceServer will
-// result in compilation errors.
-type UnsafeMailServiceServer interface {
-	mustEmbedUnimplementedMailServiceServer()
-}
-
-func RegisterMailServiceServer(s grpc.ServiceRegistrar, srv MailServiceServer) {
-	s.RegisterService(&MailService_ServiceDesc, srv)
-}
-
-func _MailService_Confirm_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MailConfirmRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MailServiceServer).Confirm(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/MailService/confirm",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MailServiceServer).Confirm(ctx, req.(*MailConfirmRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _MailService_Reset_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ResetRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MailServiceServer).Reset(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/MailService/reset",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MailServiceServer).Reset(ctx, req.(*ResetRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-// MailService_ServiceDesc is the grpc.ServiceDesc for MailService service.
-// It's only intended for direct use with grpc.RegisterService,
-// and not to be introspected or modified (even as a copy)
-var MailService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "MailService",
-	HandlerType: (*MailServiceServer)(nil),
-	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "confirm",
-			Handler:    _MailService_Confirm_Handler,
-		},
-		{
-			MethodName: "reset",
-			Handler:    _MailService_Reset_Handler,
+			MethodName: "createUser",
+			Handler:    _AuthService_CreateUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

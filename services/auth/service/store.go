@@ -1,11 +1,10 @@
 package authservice
 
 import (
+	"database/sql"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
-	"sync"
 	"time"
 
 	// "github.com/dgrijalva/jwt-go"
@@ -13,6 +12,7 @@ import (
 	"github.com/bogach-ivan/wb_assistant_be/pb"
 	"github.com/bogach-ivan/wb_assistant_be/services/auth/repo"
 	"github.com/joho/godotenv"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 
 	// "github.com/i-rm/wb/be/helpers"
@@ -30,27 +30,31 @@ type Store interface {
 
 // DBStore ...
 type DBStore struct {
-	mutex    sync.Mutex
-	host     string
-	username string
-	password string
-	name     string
+	db *sql.DB
 }
 
 // NewDBStore ...
 func NewDBStore(host, username, password, name string) *DBStore {
+	err := godotenv.Load()
+	if err != nil {
+		logrus.Fatalf("error loading env variables: %s", err.Error())
+	}
+	db, err := repo.NewMySQLDB(repo.Config{
+		Host:     viper.GetString("db.host"),
+		Username: viper.GetString("db.username"),
+		Password: os.Getenv("DB_PASSWORD"),
+		DBName:   viper.GetString("db.dbname"),
+	})
+	if err != nil {
+		logrus.Fatalf("failed to initialize db: %s", err.Error())
+	}
+	defer db.Close()
 	return &DBStore{
-		mutex:    sync.Mutex{},
-		host:     host,
-		username: username,
-		password: password,
-		name:     name,
+		db: db,
 	}
 }
 
 func (store *DBStore) Login(email, pass string) *pb.LoginResponse {
-	store.mutex.Lock()
-	defer store.mutex.Unlock()
 
 	// Validation
 	valid := helpers.Validation(
@@ -66,24 +70,10 @@ func (store *DBStore) Login(email, pass string) *pb.LoginResponse {
 	}
 	// Connect DB
 	// db := repo.ConnectDB(store.username, store.password, store.name, store.host)
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatalf("error loading env variables: %s", err.Error())
-	}
-	db, err := repo.NewMySQLDB(repo.Config{
-		Host:     viper.GetString("db.host"),
-		Username: viper.GetString("db.username"),
-		Password: os.Getenv("DB_PASSWORD"),
-		DBName:   viper.GetString("db.dbname"),
-	})
-	if err != nil {
-		log.Fatalf("failed to initialize db: %s", err.Error())
-	}
-	defer db.Close()
 
 	// User not found
 	user := &User{}
-	if db.Where("email = ? ", email).First(&user).RecordNotFound() {
+	if store.db.Where("email = ? ", email).First(&user).RecordNotFound() {
 		resp.StatusCode = http.StatusNotFound
 		return resp
 	}
@@ -99,14 +89,14 @@ func (store *DBStore) Login(email, pass string) *pb.LoginResponse {
 	// Verify confirmed Email
 	ver := &Verified{}
 	// Email not confirmed
-	if !db.Where("user_id = ?", user.ID).First(&ver).RecordNotFound() {
+	if !store.db.Where("user_id = ?", user.ID).First(&ver).RecordNotFound() {
 		resp.StatusCode = http.StatusForbidden
 		return resp
 	}
 
 	// Find accounts for the user
 	// accounts := []Account{}
-	// db.Table("accounts").Select("id, type, expires").Where("user_id = ? ", user.ID).Scan(&accounts)
+	// store.db.Table("accounts").Select("id, type, expires").Where("user_id = ? ", user.ID).Scan(&accounts)
 	// // Convert them to pb view
 	// accs := []*pb.ResponseAccount{}
 	// for _, a := range accounts {
@@ -135,8 +125,6 @@ func (store *DBStore) Login(email, pass string) *pb.LoginResponse {
 
 // TODO Drop jwt token from response
 func (store *DBStore) Register(username, email, pass, token string) *pb.RegisterResponse {
-	store.mutex.Lock()
-	defer store.mutex.Unlock()
 	resp := &pb.RegisterResponse{}
 	// validation
 	valid := helpers.Validation(
@@ -152,11 +140,11 @@ func (store *DBStore) Register(username, email, pass, token string) *pb.Register
 	}
 
 	// Connect to db
-	db := helpers.ConnectDB(store.username, store.password, store.name, store.host)
-	defer db.Close()
+
+	defer store.db.Close()
 
 	// if Email already exists in db
-	emailExists := !db.Where("email = ?", email).First(&User{}).RecordNotFound()
+	emailExists := !store.db.Where("email = ?", email).First(&User{}).RecordNotFound()
 	if emailExists {
 		resp.StatusCode = http.StatusConflict
 		return resp
@@ -169,18 +157,18 @@ func (store *DBStore) Register(username, email, pass, token string) *pb.Register
 	t2 := datetime.AddDate(0, 0, 7)
 	dt := t2.Format(time.RFC3339)
 	user := &User{Username: username, Email: email, Password: generatedPassword, Type: "free", Expires: dt}
-	db.Create(&user)
+	store.db.Create(&user)
 
 	// // Create a 7 days free account
 	// var datetime = time.Now()
 	// t2 := datetime.AddDate(0, 0, 7)
 	// dt := t2.Format(time.RFC3339)
 	// account := &Account{Type: "free", Expires: dt, UserID: user.ID}
-	// db.Create(&account)
+	// store.db.Create(&account)
 
 	// Create verified
 	verified := Verified{UserID: user.ID, Token: token}
-	db.Create(&verified)
+	store.db.Create(&verified)
 
 	// Create response with all fields
 
@@ -198,8 +186,6 @@ func (store *DBStore) Register(username, email, pass, token string) *pb.Register
 }
 
 func (store *DBStore) UpdateVerificationToken(email, pass, token string) *pb.UpdateVerificationTokenResponse {
-	store.mutex.Lock()
-	defer store.mutex.Unlock()
 	resp := &pb.UpdateVerificationTokenResponse{}
 	// validation
 	valid := helpers.Validation(
@@ -216,11 +202,10 @@ func (store *DBStore) UpdateVerificationToken(email, pass, token string) *pb.Upd
 	}
 
 	// Connect to db
-	db := helpers.ConnectDB(store.username, store.password, store.name, store.host)
 
 	// User not found
 	user := &User{}
-	if db.Where("email = ? ", email).First(&user).RecordNotFound() {
+	if store.db.Where("email = ? ", email).First(&user).RecordNotFound() {
 		fmt.Println(user.Model)
 		resp.StatusCode = http.StatusNotFound
 		return resp
@@ -236,65 +221,59 @@ func (store *DBStore) UpdateVerificationToken(email, pass, token string) *pb.Upd
 
 	ver := &Verified{}
 
-	db.Model(&Verified{}).Where("user_id = ?", user.ID).First(&ver).Update("token", token)
+	store.db.Model(&Verified{}).Where("user_id = ?", user.ID).First(&ver).Update("token", token)
 	resp.StatusCode = http.StatusOK
 	return resp
 
 }
 
 func (store *DBStore) Confirm(token string) *pb.AuthConfirmResponse {
-	store.mutex.Lock()
-	defer store.mutex.Unlock()
 
 	// Connect DB
-	db := helpers.ConnectDB(store.username, store.password, store.name, store.host)
-	defer db.Close()
+
+	defer store.db.Close()
 
 	resp := &pb.AuthConfirmResponse{}
 	// Check token exists
 	verified := &Verified{}
-	if db.Where("token = ? ", token).First(&verified).RecordNotFound() {
+	if store.db.Where("token = ? ", token).First(&verified).RecordNotFound() {
 		resp.StatusCode = http.StatusNotFound
 		return resp
 	}
 
-	db.Unscoped().Delete(&verified)
+	store.db.Unscoped().Delete(&verified)
 	resp.StatusCode = http.StatusOK
 	return resp
 }
 
 func (store *DBStore) SetTokenToPassReset(email, token string) *pb.SetTokenToPassResetResponse {
-	store.mutex.Lock()
-	defer store.mutex.Unlock()
 
 	// Connect DB
-	db := helpers.ConnectDB(store.username, store.password, store.name, store.host)
-	defer db.Close()
+
+	defer store.db.Close()
 	resp := &pb.SetTokenToPassResetResponse{}
 	// User not found
 	user := &User{}
-	if db.Where("email = ? ", email).First(&user).RecordNotFound() {
+	if store.db.Where("email = ? ", email).First(&user).RecordNotFound() {
 		resp.StatusCode = http.StatusNotFound
 		return resp
 	}
 	// Create pass
 	reset := Reset{UserID: user.ID, Token: token}
-	db.Create(&reset)
+	store.db.Create(&reset)
 	resp.StatusCode = http.StatusOK
 	return resp
 }
 
 func (store *DBStore) PassReset(email, newPass, token string) *pb.PassResetResponse {
-	store.mutex.Lock()
-	defer store.mutex.Unlock()
 
 	// Connect DB
-	db := helpers.ConnectDB(store.username, store.password, store.name, store.host)
-	defer db.Close()
+
+	defer store.db.Close()
 	resp := &pb.PassResetResponse{}
 	// User not found
 	user := &User{}
-	if db.Where("email = ? ", email).First(&user).RecordNotFound() {
+	if store.db.Where("email = ? ", email).First(&user).RecordNotFound() {
 		resp.StatusCode = http.StatusNotFound
 		return resp
 	}
@@ -303,15 +282,15 @@ func (store *DBStore) PassReset(email, newPass, token string) *pb.PassResetRespo
 		UserID: user.ID,
 	}
 
-	if db.Where("user_id = ? and token = ?", user.ID, token).First(&reset).RecordNotFound() {
+	if store.db.Where("user_id = ? and token = ?", user.ID, token).First(&reset).RecordNotFound() {
 		resp.StatusCode = http.StatusConflict
 		return resp
 	}
 
-	db.Unscoped().Delete(&reset)
+	store.db.Unscoped().Delete(&reset)
 
 	generatedPassword := helpers.HashAndSalt([]byte(newPass))
-	db.Model(user).Update("password", generatedPassword)
+	store.db.Model(user).Update("password", generatedPassword)
 	resp.StatusCode = http.StatusOK
 	return resp
 }
