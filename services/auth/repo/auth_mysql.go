@@ -26,7 +26,6 @@ func (r *AuthMySQL) CreateUser(ctx context.Context, user *pb.User) (*pb.CreateUs
 	query := fmt.Sprintf("INSERT INTO %s (username, email, password, expires, type) values (?, ?, ?, ?, ?)", usersTable)
 	stmt, err := r.db.PrepareContext(ctx, query)
 	if err != nil {
-		fmt.Println("Error: " + err.Error())
 		return &pb.CreateUserResponse{Id: 0}, err
 	}
 	defer stmt.Close()
@@ -36,15 +35,23 @@ func (r *AuthMySQL) CreateUser(ctx context.Context, user *pb.User) (*pb.CreateUs
 	dt := t2.Format(time.RFC3339)
 	res, err := stmt.ExecContext(ctx, user.Username, user.Email, user.Password, dt, "free")
 	if err != nil {
-		fmt.Println("Error: " + err.Error())
 		return &pb.CreateUserResponse{Id: 0}, err
 	}
 	id, err := res.LastInsertId()
 	if err != nil {
-		fmt.Println("Error: " + err.Error())
 		return &pb.CreateUserResponse{Id: 0}, err
 	}
 
 	fmt.Printf("ID: %d", id)
 	return &pb.CreateUserResponse{Id: int32(id)}, nil
+}
+
+func (r *AuthMySQL) GetUser(ctx context.Context, req *pb.GetUserRequest) (*pb.User, error) {
+	var user pb.User
+	query := fmt.Sprintf("SELECT username,email,password,expires,type FROM %s WHERE email=? AND password=?", usersTable)
+	err := r.db.QueryRow(query, 1).Scan(&user.Username, &user.Email, &user.Password, &user.Expires, &user.Type)
+	if err != nil {
+		return &pb.User{}, err
+	}
+	return &user, nil
 }

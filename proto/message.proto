@@ -5,13 +5,18 @@ option go_package = "./;pb";
 message User {
     string Username = 1;
     string Email = 2;
-    string Password =3 ;
+    string Password = 3;
 	string Type    = 4;
 	string Expires = 5;
 }
 
 message CreateUserResponse {
     int32 Id = 1;
+}
+
+message GetUserRequest{
+    string Email = 1;
+    string Password = 2 ;
 }
 
 

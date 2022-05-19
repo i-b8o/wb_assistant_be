@@ -29,6 +29,10 @@ func (s *AuthService) CreateUser(ctx context.Context, user *pb.User) (*pb.Create
 	return s.repo.CreateUser(ctx, user)
 }
 
+func (s *AuthService) GetUser(ctx context.Context, req *pb.GetUserRequest) (*pb.User, error) {
+	return s.repo.GetUser(ctx, req)
+}
+
 func generatePasswordHash(password string) string {
 	hash := sha1.New()
 	hash.Write([]byte(password))

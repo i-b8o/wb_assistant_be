@@ -6,4 +6,5 @@ import "message.proto";
 
 service AuthService {
     rpc createUser(User) returns (CreateUserResponse) {};
+    rpc getUser(GetUserRequest) returns (User) {};
 }
