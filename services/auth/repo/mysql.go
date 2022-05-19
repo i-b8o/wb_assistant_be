@@ -22,7 +22,7 @@ type Config struct {
 
 func NewMySQLDB(cfg Config) (*sql.DB, error) {
 	// user7:s$cret@tcp(127.0.0.1:3306)/testdb
-	s := fmt.Sprintf("%s:%s@tcp(%s:3306)/%s?charset=utf8mb4&parseTime=True&loc=Local", cfg.Username, cfg.Password, cfg.Host, cfg.DBName)
+	s := fmt.Sprintf("%s:%s@tcp(%s:3306)/%s", cfg.Username, cfg.Password, cfg.Host, cfg.DBName)
 	fmt.Println(s)
 	db, err := sql.Open("mysql", s)
 

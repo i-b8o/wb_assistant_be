@@ -50,7 +50,7 @@ func main() {
 	defer recoveryFunction()
 	go unixSig()
 	err := initConfig()
-	port := viper.GetString("grpc:port")
+	port := viper.GetString("grpc.port")
 
 	err = godotenv.Load()
 	if err != nil {

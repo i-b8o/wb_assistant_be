@@ -22,11 +22,12 @@ func NewAuthMySQL(db *sql.DB) *AuthMySQL {
 
 func (r *AuthMySQL) CreateUser(ctx context.Context, user *pb.User) (*pb.CreateUserResponse, error) {
 	var id int
-	query := fmt.Sprintf("INSERT INTO %s (username, email, password, expires, type) values ($1, $2, $3, $4, $5", usersTable)
+	query := fmt.Sprintf("INSERT INTO %s (username, email, password, expires, type) values ($1, $2, $3, $4, $5)", usersTable)
+
 	var datetime = time.Now()
 	t2 := datetime.AddDate(0, 0, 7)
 	dt := t2.Format(time.RFC3339)
-
+	fmt.Println(query, user.Username, user.Email, user.Password, dt, "free")
 	row := r.db.QueryRow(query, user.Username, user.Email, user.Password, dt, "free")
 	err := row.Scan(&id)
 	if err != nil {

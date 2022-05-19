@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/bogach-ivan/wb_assistant_be/pb"
@@ -8,6 +9,7 @@ import (
 )
 
 func (h *Handler) signUp(c *gin.Context) {
+	fmt.Println("AAAAAAAAAAAAAAAA")
 	input := &pb.User{}
 	err := c.BindJSON(&input)
 	if err != nil {
