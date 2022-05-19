@@ -1,77 +1,77 @@
 package main
 
-import (
-	"fmt"
-	"net"
-	"os"
-	"os/signal"
-	"strconv"
-	"syscall"
+// import (
+// 	"fmt"
+// 	"net"
+// 	"os"
+// 	"os/signal"
+// 	"strconv"
+// 	"syscall"
 
-	"github.com/i-rm/nonsense"
-	"github.com/sirupsen/logrus"
+// 	"github.com/i-rm/nonsense"
+// 	"github.com/sirupsen/logrus"
 
-	confirmservice "github.com/i-rm/wb/be/mail/service"
-	"github.com/i-rm/wb/be/pb"
-	"google.golang.org/grpc"
-)
+// 	confirmservice "github.com/i-rm/wb/be/mail/service"
+// 	"github.com/i-rm/wb/be/pb"
+// 	"google.golang.org/grpc"
+// )
 
-func recoveryFunction() {
-	if recoveryMessage := recover(); recoveryMessage != nil {
-		nonsense.SendStringToTelegram("Server Panicking!")
-		fmt.Println(recoveryMessage)
-	}
-	fmt.Println("This is recovery function...")
-}
+// func recoveryFunction() {
+// 	if recoveryMessage := recover(); recoveryMessage != nil {
+// 		nonsense.SendStringToTelegram("Server Panicking!")
+// 		fmt.Println(recoveryMessage)
+// 	}
+// 	fmt.Println("This is recovery function...")
+// }
 
-func unixSig() {
-	ch := make(chan os.Signal, 1)
-	signal.Notify(ch, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
-	for sig := range ch {
-		switch sig {
-		case syscall.SIGHUP: //Abort signal from abort(3)
-			nonsense.SendStringToTelegram("sigterm received: " + "SIGHUP")
-			os.Exit(0)
-		case syscall.SIGINT: //Abort signal from abort(3)
-			nonsense.SendStringToTelegram("sigterm received: " + "SIGINT")
-			os.Exit(0)
-		case syscall.SIGTERM: //Abort signal from abort(3)
-			nonsense.SendStringToTelegram("sigterm received: " + "SIGTERM")
-			os.Exit(0)
-		case syscall.SIGQUIT: //Abort signal from abort(3)
-			nonsense.SendStringToTelegram("sigterm received: " + "SIGQUIT")
-			os.Exit(0)
-		}
-	}
-}
+// func unixSig() {
+// 	ch := make(chan os.Signal, 1)
+// 	signal.Notify(ch, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
+// 	for sig := range ch {
+// 		switch sig {
+// 		case syscall.SIGHUP: //Abort signal from abort(3)
+// 			nonsense.SendStringToTelegram("sigterm received: " + "SIGHUP")
+// 			os.Exit(0)
+// 		case syscall.SIGINT: //Abort signal from abort(3)
+// 			nonsense.SendStringToTelegram("sigterm received: " + "SIGINT")
+// 			os.Exit(0)
+// 		case syscall.SIGTERM: //Abort signal from abort(3)
+// 			nonsense.SendStringToTelegram("sigterm received: " + "SIGTERM")
+// 			os.Exit(0)
+// 		case syscall.SIGQUIT: //Abort signal from abort(3)
+// 			nonsense.SendStringToTelegram("sigterm received: " + "SIGQUIT")
+// 			os.Exit(0)
+// 		}
+// 	}
+// }
 
-var server_port string
+// var server_port string
 
-func main() {
-	defer recoveryFunction()
-	go unixSig()
+// func main() {
+// 	defer recoveryFunction()
+// 	go unixSig()
 
-	port, err := strconv.Atoi(server_port)
-	if err != nil {
-		logrus.Fatalf("cannot convert %s to int: %v", server_port, err)
+// 	port, err := strconv.Atoi(server_port)
+// 	if err != nil {
+// 		logrus.Fatalf("cannot convert %s to int: %v", server_port, err)
 
-	}
+// 	}
 
-	grpcServer := grpc.NewServer()
+// 	grpcServer := grpc.NewServer()
 
-	store := confirmservice.NewPostFix()
-	server := confirmservice.NewServer(store)
-	pb.RegisterMailServiceServer(grpcServer, server)
+// 	store := confirmservice.NewPostFix()
+// 	server := confirmservice.NewServer(store)
+// 	pb.RegisterMailServiceServer(grpcServer, server)
 
-	address := fmt.Sprintf("0.0.0.0:%d", port)
-	listener, err := net.Listen("tcp", address)
-	if err != nil {
-		logrus.Fatal("cannot start server: ", err)
-	}
-	logrus.Printf("start server on address %s", address)
+// 	address := fmt.Sprintf("0.0.0.0:%d", port)
+// 	listener, err := net.Listen("tcp", address)
+// 	if err != nil {
+// 		logrus.Fatal("cannot start server: ", err)
+// 	}
+// 	logrus.Printf("start server on address %s", address)
 
-	err = grpcServer.Serve(listener)
-	if err != nil {
-		logrus.Fatal("cannot start server: ", err)
-	}
-}
+// 	err = grpcServer.Serve(listener)
+// 	if err != nil {
+// 		logrus.Fatal("cannot start server: ", err)
+// 	}
+// }

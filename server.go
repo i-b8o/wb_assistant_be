@@ -1,4 +1,4 @@
-package api
+package wb_assistant_be
 
 import (
 	"context"

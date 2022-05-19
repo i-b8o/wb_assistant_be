@@ -1,11 +1,12 @@
 package repo
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"time"
 
-	"github.com/bogach-ivan/wb_assistant_be/api"
+	"github.com/bogach-ivan/wb_assistant_be/pb"
 )
 
 type AuthMySQL struct {
@@ -19,17 +20,17 @@ func NewAuthMySQL(db *sql.DB) *AuthMySQL {
 	}
 }
 
-func (r *AuthMySQL) CreateUser(user api.User) (int, error) {
+func (r *AuthMySQL) CreateUser(ctx context.Context, user *pb.User) (*pb.CreateUserResponse, error) {
 	var id int
 	query := fmt.Sprintf("INSERT INTO %s (username, email, password, expires, type) values ($1, $2, $3, $4, $5", usersTable)
 	var datetime = time.Now()
 	t2 := datetime.AddDate(0, 0, 7)
 	dt := t2.Format(time.RFC3339)
 
-	row := r.db.QueryRow(query, user.Name, user.Email, user.Password, dt, "free")
+	row := r.db.QueryRow(query, user.Username, user.Email, user.Password, dt, "free")
 	err := row.Scan(&id)
 	if err != nil {
-		return 0, err
+		return &pb.CreateUserResponse{Id: 0}, err
 	}
-	return id, nil
+	return &pb.CreateUserResponse{Id: int32(id)}, nil
 }

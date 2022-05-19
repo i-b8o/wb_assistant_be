@@ -5,5 +5,5 @@ option go_package = "./;pb";
 import "message.proto";
 
 service AuthService {
-    rpc createUser(User) returns (CreateUser) {};
+    rpc createUser(User) returns (CreateUserResponse) {};
 }

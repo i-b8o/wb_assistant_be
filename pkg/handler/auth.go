@@ -3,19 +3,19 @@ package handler
 import (
 	"net/http"
 
-	"github.com/bogach-ivan/wb_assistant_be/api"
+	"github.com/bogach-ivan/wb_assistant_be/pb"
 	"github.com/gin-gonic/gin"
 )
 
 func (h *Handler) signUp(c *gin.Context) {
-	var input api.User
+	input := &pb.User{}
 	err := c.BindJSON(&input)
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	id, err := h.services.Authorization.CreateUser(input)
+	id, err := h.client.CreateUser(c, input)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return

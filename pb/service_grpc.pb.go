@@ -22,7 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AuthServiceClient interface {
-	CreateUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*CreateUser, error)
+	CreateUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*CreateUserResponse, error)
 }
 
 type authServiceClient struct {
@@ -33,8 +33,8 @@ func NewAuthServiceClient(cc grpc.ClientConnInterface) AuthServiceClient {
 	return &authServiceClient{cc}
 }
 
-func (c *authServiceClient) CreateUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*CreateUser, error) {
-	out := new(CreateUser)
+func (c *authServiceClient) CreateUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*CreateUserResponse, error) {
+	out := new(CreateUserResponse)
 	err := c.cc.Invoke(ctx, "/AuthService/createUser", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -46,7 +46,7 @@ func (c *authServiceClient) CreateUser(ctx context.Context, in *User, opts ...gr
 // All implementations must embed UnimplementedAuthServiceServer
 // for forward compatibility
 type AuthServiceServer interface {
-	CreateUser(context.Context, *User) (*CreateUser, error)
+	CreateUser(context.Context, *User) (*CreateUserResponse, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -54,7 +54,7 @@ type AuthServiceServer interface {
 type UnimplementedAuthServiceServer struct {
 }
 
-func (UnimplementedAuthServiceServer) CreateUser(context.Context, *User) (*CreateUser, error) {
+func (UnimplementedAuthServiceServer) CreateUser(context.Context, *User) (*CreateUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}

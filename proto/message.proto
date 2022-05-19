@@ -10,7 +10,7 @@ message User {
 	string Expires = 5;
 }
 
-message CreateUser {
+message CreateUserResponse {
     int32 Id = 1;
 }
 

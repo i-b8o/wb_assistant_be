@@ -1,17 +1,18 @@
 package handler
 
 import (
-	"github.com/bogach-ivan/wb_assistant_be/api/pkg/service"
-
+	"github.com/bogach-ivan/wb_assistant_be/pb"
 	"github.com/gin-gonic/gin"
 )
 
 type Handler struct {
-	services *service.Service
+	client pb.AuthServiceClient
 }
 
-func NewHandler(services *service.Service) *Handler {
-	return &Handler{services: services}
+func NewHandler(client pb.AuthServiceClient) *Handler {
+	return &Handler{
+		client: client,
+	}
 }
 
 func (h *Handler) InitRoutes() *gin.Engine {

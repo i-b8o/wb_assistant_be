@@ -9,9 +9,12 @@ import (
 	"syscall"
 
 	"github.com/bogach-ivan/wb_assistant_be/pb"
+	"github.com/bogach-ivan/wb_assistant_be/services/auth/repo"
 	authservice "github.com/bogach-ivan/wb_assistant_be/services/auth/service"
 	"github.com/i-rm/nonsense"
+	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 	"google.golang.org/grpc"
 )
 
@@ -62,10 +65,25 @@ func main() {
 
 	}
 
-	grpcServer := grpc.NewServer()
+	err = godotenv.Load()
+	if err != nil {
+		logrus.Fatalf("error loading env variables: %s", err.Error())
+	}
+	db, err := repo.NewMySQLDB(repo.Config{
+		Host:     viper.GetString("db.host"),
+		Username: viper.GetString("db.username"),
+		Password: os.Getenv("DB_PASSWORD"),
+		DBName:   viper.GetString("db.dbname"),
+	})
+	if err != nil {
+		logrus.Fatalf("failed to initialize db: %s", err.Error())
+	}
+	defer db.Close()
 
-	store := authservice.NewDBStore(db_host, db_username, db_password, db_name)
-	server := authservice.NewServer(store)
+	grpcServer := grpc.NewServer()
+	// store := authservice.NewDBStore(db_host, db_username, db_password, db_name)
+	repo := repo.NewAuthMySQL(db)
+	server := authservice.NewAuthService(*repo)
 	pb.RegisterAuthServiceServer(grpcServer, server)
 
 	address := fmt.Sprintf("0.0.0.0:%d", port)

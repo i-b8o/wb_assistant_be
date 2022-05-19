@@ -1,10 +1,11 @@
 package authservice
 
 import (
+	"context"
 	"crypto/sha1"
 	"fmt"
 
-	"github.com/bogach-ivan/wb_assistant_be/api"
+	"github.com/bogach-ivan/wb_assistant_be/pb"
 	"github.com/bogach-ivan/wb_assistant_be/services/auth/repo"
 )
 
@@ -12,6 +13,7 @@ const salt = "jasfkldjasfkldjasklfs12-93234-0[23"
 
 type AuthService struct {
 	repo repo.AuthMySQL
+	pb.UnimplementedAuthServiceServer
 }
 
 func NewAuthService(repo repo.AuthMySQL) *AuthService {
@@ -21,10 +23,10 @@ func NewAuthService(repo repo.AuthMySQL) *AuthService {
 	}
 }
 
-func (s *AuthService) CreateUser(user api.User) (int, error) {
+func (s *AuthService) CreateUser(ctx context.Context, user *pb.User) (*pb.CreateUserResponse, error) {
 	// Befor create hash password
 	user.Password = generatePasswordHash(user.Password)
-	return s.repo.CreateUser(user)
+	return s.repo.CreateUser(ctx, user)
 }
 
 func generatePasswordHash(password string) string {

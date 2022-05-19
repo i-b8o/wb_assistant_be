@@ -4,3 +4,7 @@ db:
   host: "localhost"
   username: "wb_user"
   dbname: "wb"
+
+grpc:
+  ip: ""
+  port: "9999"
