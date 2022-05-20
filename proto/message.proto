@@ -3,21 +3,35 @@ syntax = "proto3";
 option go_package = "./;pb";
 
 message User {
-    string Username = 1;
-    string Email = 2;
-    string Password = 3;
-	string Type    = 4;
-	string Expires = 5;
+    int32 ID = 1;
+    string Username = 2;
+    string Email = 3;
+    string Password = 4;
+	string Type    = 5;
+	string Expires = 6;
 }
 
 message CreateUserResponse {
-    int32 Id = 1;
+    int32 ID = 1;
 }
 
-message GetUserRequest{
+message GenerateTokenRequest{
     string Email = 1;
     string Password = 2 ;
 }
 
 
+message GenerateTokenResponse{
+    string ID = 1;
+}
 
+message ParseTokenRequest {
+    string token = 1;
+}
+message ParseTokenResponse {
+    int32 ID = 1;
+}
+
+message GetDetailsRequest {
+    int32 ID = 1;
+}

@@ -29,5 +29,11 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		auth.POST("/password-reset", h.passwordReset)
 	}
 
+	account := router.Group("/account", h.userIdentity)
+	{
+		account.POST("/extend", h.extend)
+		account.GET("/details", h.details)
+	}
+
 	return router
 }

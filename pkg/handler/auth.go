@@ -24,19 +24,19 @@ func (h *Handler) signUp(c *gin.Context) {
 }
 
 func (h *Handler) signIn(c *gin.Context) {
-	input := &pb.GetUserRequest{}
-	err := c.BindJSON(&input)
+	req := &pb.GenerateTokenRequest{}
+	err := c.BindJSON(&req)
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	user, err := h.client.GetUser(c, input)
+	resp, err := h.client.GenerateToken(c, req)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
-	c.JSON(http.StatusOK, map[string]interface{}{"id": id})
+	c.JSON(http.StatusOK, map[string]interface{}{"token": resp.ID})
 }
 
 func (h *Handler) confirmation(c *gin.Context) {

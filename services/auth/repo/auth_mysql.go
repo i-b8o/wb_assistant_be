@@ -22,11 +22,10 @@ func NewAuthMySQL(db *sql.DB) *AuthMySQL {
 
 // TODO perform setting of db connection timeout and so on
 func (r *AuthMySQL) CreateUser(ctx context.Context, user *pb.User) (*pb.CreateUserResponse, error) {
-	// var id int
 	query := fmt.Sprintf("INSERT INTO %s (username, email, password, expires, type) values (?, ?, ?, ?, ?)", usersTable)
 	stmt, err := r.db.PrepareContext(ctx, query)
 	if err != nil {
-		return &pb.CreateUserResponse{Id: 0}, err
+		return &pb.CreateUserResponse{ID: 0}, err
 	}
 	defer stmt.Close()
 
@@ -35,23 +34,33 @@ func (r *AuthMySQL) CreateUser(ctx context.Context, user *pb.User) (*pb.CreateUs
 	dt := t2.Format(time.RFC3339)
 	res, err := stmt.ExecContext(ctx, user.Username, user.Email, user.Password, dt, "free")
 	if err != nil {
-		return &pb.CreateUserResponse{Id: 0}, err
+		return &pb.CreateUserResponse{ID: 0}, err
 	}
 	id, err := res.LastInsertId()
 	if err != nil {
-		return &pb.CreateUserResponse{Id: 0}, err
+		return &pb.CreateUserResponse{ID: 0}, err
 	}
 
 	fmt.Printf("ID: %d", id)
-	return &pb.CreateUserResponse{Id: int32(id)}, nil
+	return &pb.CreateUserResponse{ID: int32(id)}, nil
 }
 
-func (r *AuthMySQL) GetUser(ctx context.Context, req *pb.GetUserRequest) (*pb.User, error) {
-	var user pb.User
-	query := fmt.Sprintf("SELECT username,email,password,expires,type FROM %s WHERE email=? AND password=?", usersTable)
-	err := r.db.QueryRow(query, 1).Scan(&user.Username, &user.Email, &user.Password, &user.Expires, &user.Type)
+func (r *AuthMySQL) GetUserID(email, password string) (int, error) {
+	var id int
+	query := fmt.Sprintf("SELECT id  FROM %s WHERE email=? AND password=?", usersTable)
+	err := r.db.QueryRow(query, email, password).Scan(&id)
+	if err != nil {
+		return 0, err
+	}
+	return id, nil
+}
+
+func (r *AuthMySQL) GetDetails(userId int32) (*pb.User, error) {
+	user := &pb.User{}
+	query := fmt.Sprintf("SELECT id,username,email,password,expires,type FROM %s WHERE id=?", usersTable)
+	err := r.db.QueryRow(query, userId).Scan(&user)
 	if err != nil {
 		return &pb.User{}, err
 	}
-	return &user, nil
+	return user, nil
 }
