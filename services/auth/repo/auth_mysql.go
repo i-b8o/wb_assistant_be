@@ -57,8 +57,8 @@ func (r *AuthMySQL) GetUserID(email, password string) (int, error) {
 
 func (r *AuthMySQL) GetDetails(userId int32) (*pb.User, error) {
 	user := &pb.User{}
-	query := fmt.Sprintf("SELECT id,username,email,password,expires,type FROM %s WHERE id=?", usersTable)
-	err := r.db.QueryRow(query, userId).Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.Expires, &user.Type)
+	query := fmt.Sprintf("SELECT id,username,email,expires,type FROM %s WHERE id=?", usersTable)
+	err := r.db.QueryRow(query, userId).Scan(&user.ID, &user.Username, &user.Email, &user.Expires, &user.Type)
 	if err != nil {
 		return &pb.User{}, err
 	}
