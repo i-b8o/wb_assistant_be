@@ -14,12 +14,18 @@ message CreateUserRequest {
     string Username = 1;
     string Email    = 2;
     string Password = 3;
-    string token    = 4;
 }
 
 message CreateUserResponse {
     int32 ID = 1;
 }
+
+message ConfirmTokenRequest {
+    int32 ID     = 1;
+    string token = 2;
+}
+
+message ConfirmTokenResponse {}
 
 message GenerateTokenRequest{
     string Email    = 1;
@@ -55,13 +61,9 @@ message MailConfirmRequest {
 	string email = 2;
 	string pass = 3;
 }
-message MailConfirmResponse {
-	int32 statusCode = 1;
-}
+message MailConfirmResponse {}
 message ResetRequest {
 	string url = 1;
 	string email = 2;
 }
-message ResetResponse {
-	int32 statusCode = 1;
-}
+message ResetResponse {}

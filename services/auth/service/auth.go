@@ -102,3 +102,7 @@ func (s *AuthService) Update(ctx context.Context, in *pb.UpdateRequest) (*pb.Upd
 	}
 	return s.repo.Update(in)
 }
+
+func (s *AuthService) ConfirmToken(ctx context.Context, in *pb.ConfirmTokenRequest) (*pb.ConfirmTokenResponse, error) {
+	return s.repo.ConfirmToken(ctx, in)
+}

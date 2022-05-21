@@ -8,11 +8,11 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/bogach-ivan/nonsense"
 	"github.com/bogach-ivan/wb_assistant_be/pb"
 	mailservice "github.com/bogach-ivan/wb_assistant_be/services/mail/service"
 
 	"github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
 
 	"google.golang.org/grpc"
 )
@@ -49,17 +49,10 @@ func unixSig() {
 func main() {
 	defer recoveryFunction()
 	go unixSig()
-
+	port := os.Args[1]
 	logrus.SetFormatter(new(logrus.JSONFormatter))
-	err := initConfig()
-	if err != nil {
 
-		logrus.Fatalf("error initializing configs: %s", err.Error())
-	}
-	fmt.Println(viper.GetString("db.dbname"))
 	// GRPC client creation
-	port := viper.GetString("mail.port")
-
 	grpcServer := grpc.NewServer()
 
 	store := mailservice.NewPostFix()
@@ -77,10 +70,4 @@ func main() {
 	if err != nil {
 		log.Fatal("cannot start server: ", err)
 	}
-}
-
-func initConfig() error {
-	viper.AddConfigPath("configs")
-	viper.SetConfigName("config")
-	return viper.ReadInConfig()
 }

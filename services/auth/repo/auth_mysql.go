@@ -91,3 +91,19 @@ func (r *AuthMySQL) Update(in *pb.UpdateRequest) (*pb.UpdateResponse, error) {
 
 	return &pb.UpdateResponse{}, nil
 }
+
+func (r *AuthMySQL) ConfirmToken(ctx context.Context, in *pb.ConfirmTokenRequest) (*pb.ConfirmTokenResponse, error) {
+	query := fmt.Sprintf("INSERT INTO %s (user_id, token) values (?, ?)", verifiedsTable)
+	stmt, err := r.db.PrepareContext(ctx, query)
+	if err != nil {
+		return &pb.ConfirmTokenResponse{}, err
+	}
+	defer stmt.Close()
+
+	_, err = stmt.ExecContext(ctx, in.ID, in.Token)
+	if err != nil {
+		return &pb.ConfirmTokenResponse{}, err
+	}
+
+	return &pb.ConfirmTokenResponse{}, nil
+}

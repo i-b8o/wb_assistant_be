@@ -3,6 +3,7 @@ package handler
 import (
 	"net/http"
 
+	"github.com/bogach-ivan/nonsense"
 	"github.com/bogach-ivan/wb_assistant_be/pb"
 	"github.com/gin-gonic/gin"
 )
@@ -26,16 +27,27 @@ func (h *Handler) signUp(c *gin.Context) {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
-
-	id, err := h.authClient.CreateUser(c, input)
+	// Create User
+	resp, err := h.authClient.CreateUser(c, input)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
+	// Add confirm token to db
 	token := nonsense.RandSeq(100)
-
-	c.JSON(http.StatusOK, map[string]interface{}{"id": id})
+	_, err = h.authClient.ConfirmToken(c, &pb.ConfirmTokenRequest{ID: resp.ID, Token: token})
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	// Send the confirm token to a user email
+	_, err = h.mailClient.Confirm(c, &pb.MailConfirmRequest{Url: "bdrop.net/" + token, Email: input.Email, Pass: input.Password})
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	c.JSON(http.StatusOK, map[string]interface{}{"id": resp.ID})
 }
 
 // @Summary SignIn

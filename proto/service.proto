@@ -6,6 +6,7 @@ import "message.proto";
 
 service AuthService {
     rpc createUser(CreateUserRequest) returns (CreateUserResponse) {};
+    rpc confirmToken(ConfirmTokenRequest) returns (ConfirmTokenResponse) {};
     rpc generateToken(GenerateTokenRequest) returns (GenerateTokenResponse) {};
     rpc parseToken(ParseTokenRequest) returns (ParseTokenResponse) {};
     rpc getDetails(GetDetailsRequest) returns (User) {};

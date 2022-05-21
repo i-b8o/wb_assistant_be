@@ -9,6 +9,7 @@ import (
 
 const (
 	usersTable            = "users"
+	verifiedsTable        = "verifieds"
 	verifiedPasswordTable = "verifieds"
 	resetPasswordTable    = "resets"
 )

@@ -7,6 +7,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/bogach-ivan/nonsense"
 	"github.com/bogach-ivan/wb_assistant_be/pb"
 	"github.com/bogach-ivan/wb_assistant_be/services/auth/repo"
 	authservice "github.com/bogach-ivan/wb_assistant_be/services/auth/service"
@@ -57,6 +58,7 @@ func main() {
 		logrus.Fatalf("error loading env variables: %s", err.Error())
 	}
 
+	fmt.Println(os.Getenv("DB_PASSWORD"))
 	db, err := repo.NewMySQLDB(repo.Config{
 		Host:     viper.GetString("db.host"),
 		Username: viper.GetString("db.username"),
