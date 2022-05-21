@@ -45,6 +45,17 @@ func (h *Handler) update(c *gin.Context) {
 	c.JSON(http.StatusOK, statusResponse{"ok"})
 }
 
+// @Summary account details
+// @Security ApiKeyAuth
+// @Tags account
+// @Description account details
+// @ID details-account
+// @Accept json
+// @Produce json
+// @Success 200 {object} pb.User 1
+// @Failure 400 {object} errorResponse
+// @Failure default {object} errorResponse
+// @Router /account/details [get]
 func (h *Handler) details(c *gin.Context) {
 	id, err := getUserID(c)
 	if err != nil {

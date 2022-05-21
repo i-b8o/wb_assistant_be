@@ -42,7 +42,6 @@ func (r *AuthMySQL) CreateUser(ctx context.Context, username, email, password st
 		return &pb.CreateUserResponse{ID: 0}, err
 	}
 
-	fmt.Printf("ID: %d", id)
 	return &pb.CreateUserResponse{ID: int32(id)}, nil
 }
 

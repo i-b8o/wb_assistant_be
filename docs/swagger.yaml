@@ -40,6 +40,19 @@ definitions:
       Username:
         type: string
     type: object
+  pb.User:
+    properties:
+      Email:
+        type: string
+      Expires:
+        type: string
+      ID:
+        type: integer
+      Type:
+        type: string
+      Username:
+        type: string
+    type: object
 host: localhost:8080
 info:
   contact: {}
@@ -47,6 +60,32 @@ info:
   title: WB Assistant API
   version: "1.0"
 paths:
+  /account/details:
+    get:
+      consumes:
+      - application/json
+      description: account details
+      operationId: details-account
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/pb.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: account details
+      tags:
+      - account
   /account/update:
     post:
       consumes:

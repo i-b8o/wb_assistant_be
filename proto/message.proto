@@ -6,9 +6,8 @@ message User {
     int32 ID        = 1;
     string Username = 2;
     string Email    = 3;
-    string Password = 4;
-	string Type     = 5;
-	string Expires  = 6;
+	string Type     = 4;
+	string Expires  = 5;
 }
 
 message CreateUserRequest {
