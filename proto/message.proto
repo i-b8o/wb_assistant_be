@@ -14,6 +14,7 @@ message CreateUserRequest {
     string Username = 1;
     string Email    = 2;
     string Password = 3;
+    string token    = 4;
 }
 
 message CreateUserResponse {
@@ -47,6 +48,20 @@ message UpdateRequest {
     string Password    = 3;
 }
 
-message UpdateResponse {
+message UpdateResponse {}
 
+message MailConfirmRequest {
+	string url = 1;
+	string email = 2;
+	string pass = 3;
+}
+message MailConfirmResponse {
+	int32 statusCode = 1;
+}
+message ResetRequest {
+	string url = 1;
+	string email = 2;
+}
+message ResetResponse {
+	int32 statusCode = 1;
 }

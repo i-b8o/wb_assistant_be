@@ -41,8 +41,15 @@ var file_service_proto_rawDesc = []byte{
 	0x75, 0x65, 0x73, 0x74, 0x1a, 0x05, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x22, 0x00, 0x12, 0x2b, 0x0a,
 	0x06, 0x75, 0x70, 0x64, 0x61, 0x74, 0x65, 0x12, 0x0e, 0x2e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65,
 	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x0f, 0x2e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65,
-	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x42, 0x07, 0x5a, 0x05, 0x2e, 0x2f,
-	0x3b, 0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x32, 0x6f, 0x0a, 0x0b, 0x4d, 0x61,
+	0x69, 0x6c, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x36, 0x0a, 0x07, 0x63, 0x6f, 0x6e,
+	0x66, 0x69, 0x72, 0x6d, 0x12, 0x13, 0x2e, 0x4d, 0x61, 0x69, 0x6c, 0x43, 0x6f, 0x6e, 0x66, 0x69,
+	0x72, 0x6d, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x14, 0x2e, 0x4d, 0x61, 0x69, 0x6c,
+	0x43, 0x6f, 0x6e, 0x66, 0x69, 0x72, 0x6d, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22,
+	0x00, 0x12, 0x28, 0x0a, 0x05, 0x72, 0x65, 0x73, 0x65, 0x74, 0x12, 0x0d, 0x2e, 0x52, 0x65, 0x73,
+	0x65, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x0e, 0x2e, 0x52, 0x65, 0x73, 0x65,
+	0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x42, 0x07, 0x5a, 0x05, 0x2e,
+	0x2f, 0x3b, 0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var file_service_proto_goTypes = []interface{}{
@@ -51,28 +58,36 @@ var file_service_proto_goTypes = []interface{}{
 	(*ParseTokenRequest)(nil),     // 2: ParseTokenRequest
 	(*GetDetailsRequest)(nil),     // 3: GetDetailsRequest
 	(*UpdateRequest)(nil),         // 4: UpdateRequest
-	(*CreateUserResponse)(nil),    // 5: CreateUserResponse
-	(*GenerateTokenResponse)(nil), // 6: GenerateTokenResponse
-	(*ParseTokenResponse)(nil),    // 7: ParseTokenResponse
-	(*User)(nil),                  // 8: User
-	(*UpdateResponse)(nil),        // 9: UpdateResponse
+	(*MailConfirmRequest)(nil),    // 5: MailConfirmRequest
+	(*ResetRequest)(nil),          // 6: ResetRequest
+	(*CreateUserResponse)(nil),    // 7: CreateUserResponse
+	(*GenerateTokenResponse)(nil), // 8: GenerateTokenResponse
+	(*ParseTokenResponse)(nil),    // 9: ParseTokenResponse
+	(*User)(nil),                  // 10: User
+	(*UpdateResponse)(nil),        // 11: UpdateResponse
+	(*MailConfirmResponse)(nil),   // 12: MailConfirmResponse
+	(*ResetResponse)(nil),         // 13: ResetResponse
 }
 var file_service_proto_depIdxs = []int32{
-	0, // 0: AuthService.createUser:input_type -> CreateUserRequest
-	1, // 1: AuthService.generateToken:input_type -> GenerateTokenRequest
-	2, // 2: AuthService.parseToken:input_type -> ParseTokenRequest
-	3, // 3: AuthService.getDetails:input_type -> GetDetailsRequest
-	4, // 4: AuthService.update:input_type -> UpdateRequest
-	5, // 5: AuthService.createUser:output_type -> CreateUserResponse
-	6, // 6: AuthService.generateToken:output_type -> GenerateTokenResponse
-	7, // 7: AuthService.parseToken:output_type -> ParseTokenResponse
-	8, // 8: AuthService.getDetails:output_type -> User
-	9, // 9: AuthService.update:output_type -> UpdateResponse
-	5, // [5:10] is the sub-list for method output_type
-	0, // [0:5] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	0,  // 0: AuthService.createUser:input_type -> CreateUserRequest
+	1,  // 1: AuthService.generateToken:input_type -> GenerateTokenRequest
+	2,  // 2: AuthService.parseToken:input_type -> ParseTokenRequest
+	3,  // 3: AuthService.getDetails:input_type -> GetDetailsRequest
+	4,  // 4: AuthService.update:input_type -> UpdateRequest
+	5,  // 5: MailService.confirm:input_type -> MailConfirmRequest
+	6,  // 6: MailService.reset:input_type -> ResetRequest
+	7,  // 7: AuthService.createUser:output_type -> CreateUserResponse
+	8,  // 8: AuthService.generateToken:output_type -> GenerateTokenResponse
+	9,  // 9: AuthService.parseToken:output_type -> ParseTokenResponse
+	10, // 10: AuthService.getDetails:output_type -> User
+	11, // 11: AuthService.update:output_type -> UpdateResponse
+	12, // 12: MailService.confirm:output_type -> MailConfirmResponse
+	13, // 13: MailService.reset:output_type -> ResetResponse
+	7,  // [7:14] is the sub-list for method output_type
+	0,  // [0:7] is the sub-list for method input_type
+	0,  // [0:0] is the sub-list for extension type_name
+	0,  // [0:0] is the sub-list for extension extendee
+	0,  // [0:0] is the sub-list for field type_name
 }
 
 func init() { file_service_proto_init() }
@@ -89,7 +104,7 @@ func file_service_proto_init() {
 			NumEnums:      0,
 			NumMessages:   0,
 			NumExtensions: 0,
-			NumServices:   1,
+			NumServices:   2,
 		},
 		GoTypes:           file_service_proto_goTypes,
 		DependencyIndexes: file_service_proto_depIdxs,

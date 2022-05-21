@@ -36,7 +36,7 @@ func (h *Handler) update(c *gin.Context) {
 		return
 	}
 	input.ID = id
-	_, err = h.client.Update(c, input)
+	_, err = h.authClient.Update(c, input)
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
@@ -61,7 +61,7 @@ func (h *Handler) details(c *gin.Context) {
 	if err != nil {
 		return
 	}
-	user, err := h.client.GetDetails(c, &pb.GetDetailsRequest{ID: id})
+	user, err := h.authClient.GetDetails(c, &pb.GetDetailsRequest{ID: id})
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return

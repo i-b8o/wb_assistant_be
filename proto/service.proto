@@ -11,3 +11,8 @@ service AuthService {
     rpc getDetails(GetDetailsRequest) returns (User) {};
     rpc update(UpdateRequest) returns (UpdateResponse) {};
 }
+
+service MailService {
+    rpc confirm(MailConfirmRequest) returns (MailConfirmResponse) {};
+    rpc reset(ResetRequest) returns (ResetResponse) {};    
+}

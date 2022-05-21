@@ -2,18 +2,18 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net"
 	"os"
 	"os/signal"
 	"syscall"
 
 	"github.com/bogach-ivan/wb_assistant_be/pb"
-	"github.com/bogach-ivan/wb_assistant_be/services/auth/repo"
-	authservice "github.com/bogach-ivan/wb_assistant_be/services/auth/service"
+	mailservice "github.com/bogach-ivan/wb_assistant_be/services/mail/service"
 
-	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+
 	"google.golang.org/grpc"
 )
 
@@ -49,55 +49,36 @@ func unixSig() {
 func main() {
 	defer recoveryFunction()
 	go unixSig()
+
+	logrus.SetFormatter(new(logrus.JSONFormatter))
 	err := initConfig()
-	port := viper.GetString("grpc.port")
-
-	err = godotenv.Load()
 	if err != nil {
-		logrus.Fatalf("error loading env variables: %s", err.Error())
-	}
 
-	db, err := repo.NewMySQLDB(repo.Config{
-		Host:     viper.GetString("db.host"),
-		Username: viper.GetString("db.username"),
-		Password: os.Getenv("DB_PASSWORD"),
-		DBName:   viper.GetString("db.dbname"),
-	})
-	if err != nil {
-		logrus.Fatalf("failed to initialize db: %s", err.Error())
+		logrus.Fatalf("error initializing configs: %s", err.Error())
 	}
-	defer db.Close()
+	fmt.Println(viper.GetString("db.dbname"))
+	// GRPC client creation
+	port := viper.GetString("mail.port")
 
 	grpcServer := grpc.NewServer()
-	// store := authservice.NewDBStore(db_host, db_username, db_password, db_name)
-	repo := repo.NewAuthMySQL(db)
-	server := authservice.NewAuthService(*repo)
-	pb.RegisterAuthServiceServer(grpcServer, server)
+
+	store := mailservice.NewPostFix()
+	server := mailservice.NewServer(store)
+	pb.RegisterMailServiceServer(grpcServer, server)
 
 	address := fmt.Sprintf("0.0.0.0:%s", port)
 	listener, err := net.Listen("tcp", address)
 	if err != nil {
-		logrus.Fatal("cannot start server: ", err)
+		log.Fatal("cannot start server: ", err)
 	}
-	logrus.Printf("start server on address %s", address)
+	log.Printf("start server on address %s", address)
 
-	go func() {
-		err = grpcServer.Serve(listener)
-		if err != nil {
-			logrus.Fatal("cannot start server: ", err)
-		}
-	}()
-	logrus.Print("WB Assistant GRPC Server started")
-
-	quit := make(chan os.Signal, 1)
-	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
-	<-quit
-
-	logrus.Print("WB Assistant GRPC Server Shutting Down")
-
-	grpcServer.Stop()
-
+	err = grpcServer.Serve(listener)
+	if err != nil {
+		log.Fatal("cannot start server: ", err)
+	}
 }
+
 func initConfig() error {
 	viper.AddConfigPath("configs")
 	viper.SetConfigName("config")

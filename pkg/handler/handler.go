@@ -10,12 +10,14 @@ import (
 )
 
 type Handler struct {
-	client pb.AuthServiceClient
+	authClient pb.AuthServiceClient
+	mailClient pb.MailServiceClient
 }
 
-func NewHandler(client pb.AuthServiceClient) *Handler {
+func NewHandler(authClient pb.AuthServiceClient, mailClient pb.MailServiceClient) *Handler {
 	return &Handler{
-		client: client,
+		authClient: authClient,
+		mailClient: mailClient,
 	}
 }
 

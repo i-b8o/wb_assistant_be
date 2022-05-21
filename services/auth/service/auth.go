@@ -98,7 +98,7 @@ func (s *AuthService) Update(ctx context.Context, in *pb.UpdateRequest) (*pb.Upd
 	if in.Password != "" {
 
 		in.Password = generatePasswordHash(in.Password)
-		fmt.Println("AAAAAAAAAAAAA" + in.Password)
+
 	}
 	return s.repo.Update(in)
 }

@@ -27,11 +27,14 @@ func (h *Handler) signUp(c *gin.Context) {
 		return
 	}
 
-	id, err := h.client.CreateUser(c, input)
+	id, err := h.authClient.CreateUser(c, input)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
+
+	token := nonsense.RandSeq(100)
+
 	c.JSON(http.StatusOK, map[string]interface{}{"id": id})
 }
 
@@ -55,7 +58,7 @@ func (h *Handler) signIn(c *gin.Context) {
 		return
 	}
 
-	resp, err := h.client.GenerateToken(c, req)
+	resp, err := h.authClient.GenerateToken(c, req)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return

@@ -247,3 +247,125 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "service.proto",
 }
+
+// MailServiceClient is the client API for MailService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type MailServiceClient interface {
+	Confirm(ctx context.Context, in *MailConfirmRequest, opts ...grpc.CallOption) (*MailConfirmResponse, error)
+	Reset(ctx context.Context, in *ResetRequest, opts ...grpc.CallOption) (*ResetResponse, error)
+}
+
+type mailServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewMailServiceClient(cc grpc.ClientConnInterface) MailServiceClient {
+	return &mailServiceClient{cc}
+}
+
+func (c *mailServiceClient) Confirm(ctx context.Context, in *MailConfirmRequest, opts ...grpc.CallOption) (*MailConfirmResponse, error) {
+	out := new(MailConfirmResponse)
+	err := c.cc.Invoke(ctx, "/MailService/confirm", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *mailServiceClient) Reset(ctx context.Context, in *ResetRequest, opts ...grpc.CallOption) (*ResetResponse, error) {
+	out := new(ResetResponse)
+	err := c.cc.Invoke(ctx, "/MailService/reset", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// MailServiceServer is the server API for MailService service.
+// All implementations must embed UnimplementedMailServiceServer
+// for forward compatibility
+type MailServiceServer interface {
+	Confirm(context.Context, *MailConfirmRequest) (*MailConfirmResponse, error)
+	Reset(context.Context, *ResetRequest) (*ResetResponse, error)
+	mustEmbedUnimplementedMailServiceServer()
+}
+
+// UnimplementedMailServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedMailServiceServer struct {
+}
+
+func (UnimplementedMailServiceServer) Confirm(context.Context, *MailConfirmRequest) (*MailConfirmResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Confirm not implemented")
+}
+func (UnimplementedMailServiceServer) Reset(context.Context, *ResetRequest) (*ResetResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Reset not implemented")
+}
+func (UnimplementedMailServiceServer) mustEmbedUnimplementedMailServiceServer() {}
+
+// UnsafeMailServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to MailServiceServer will
+// result in compilation errors.
+type UnsafeMailServiceServer interface {
+	mustEmbedUnimplementedMailServiceServer()
+}
+
+func RegisterMailServiceServer(s grpc.ServiceRegistrar, srv MailServiceServer) {
+	s.RegisterService(&MailService_ServiceDesc, srv)
+}
+
+func _MailService_Confirm_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MailConfirmRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MailServiceServer).Confirm(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/MailService/confirm",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MailServiceServer).Confirm(ctx, req.(*MailConfirmRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MailService_Reset_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ResetRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MailServiceServer).Reset(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/MailService/reset",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MailServiceServer).Reset(ctx, req.(*ResetRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// MailService_ServiceDesc is the grpc.ServiceDesc for MailService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var MailService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "MailService",
+	HandlerType: (*MailServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "confirm",
+			Handler:    _MailService_Confirm_Handler,
+		},
+		{
+			MethodName: "reset",
+			Handler:    _MailService_Reset_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "service.proto",
+}

@@ -35,14 +35,21 @@ func main() {
 	}
 	fmt.Println(viper.GetString("db.dbname"))
 	// GRPC client creation
-	addr := fmt.Sprintf("%s:%s", viper.GetString("grpc.ip"), viper.GetString("grpc.port"))
-	clientConn, err := grpc.Dial(addr, grpc.WithInsecure())
+	addrAuth := fmt.Sprintf("%s:%s", viper.GetString("grpc.ip"), viper.GetString("grpc.port"))
+	authClientConn, err := grpc.Dial(addrAuth, grpc.WithInsecure())
 	if err != nil {
-		logrus.Fatalf("error creating grpc connection: %s", err.Error())
+		logrus.Fatalf("error creating auth grpc connection: %s", err.Error())
 	}
-	client := pb.NewAuthServiceClient(clientConn)
+	authClient := pb.NewAuthServiceClient(authClientConn)
 
-	handlers := handler.NewHandler(client)
+	addrMail := fmt.Sprintf("%s:%s", viper.GetString("mail.ip"), viper.GetString("mail.port"))
+	mailClientConn, err := grpc.Dial(addrMail, grpc.WithInsecure())
+	if err != nil {
+		logrus.Fatalf("error creating auth grpc connection: %s", err.Error())
+	}
+	mailClient := pb.NewMailServiceClient(mailClientConn)
+
+	handlers := handler.NewHandler(authClient, mailClient)
 	// init server instance
 	srv := new(wb_assistant_be.Server)
 	// run server

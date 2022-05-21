@@ -8,3 +8,7 @@ db:
 grpc:
   ip: ""
   port: "9999"
+
+mail:
+  ip: ""
+  port: "7777"
