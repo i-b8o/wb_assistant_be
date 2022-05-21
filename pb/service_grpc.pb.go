@@ -26,7 +26,7 @@ type AuthServiceClient interface {
 	GenerateToken(ctx context.Context, in *GenerateTokenRequest, opts ...grpc.CallOption) (*GenerateTokenResponse, error)
 	ParseToken(ctx context.Context, in *ParseTokenRequest, opts ...grpc.CallOption) (*ParseTokenResponse, error)
 	GetDetails(ctx context.Context, in *GetDetailsRequest, opts ...grpc.CallOption) (*User, error)
-	Update(ctx context.Context, in *User, opts ...grpc.CallOption) (*UpdateAccountResponse, error)
+	Update(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error)
 }
 
 type authServiceClient struct {
@@ -73,8 +73,8 @@ func (c *authServiceClient) GetDetails(ctx context.Context, in *GetDetailsReques
 	return out, nil
 }
 
-func (c *authServiceClient) Update(ctx context.Context, in *User, opts ...grpc.CallOption) (*UpdateAccountResponse, error) {
-	out := new(UpdateAccountResponse)
+func (c *authServiceClient) Update(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error) {
+	out := new(UpdateResponse)
 	err := c.cc.Invoke(ctx, "/AuthService/update", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -90,7 +90,7 @@ type AuthServiceServer interface {
 	GenerateToken(context.Context, *GenerateTokenRequest) (*GenerateTokenResponse, error)
 	ParseToken(context.Context, *ParseTokenRequest) (*ParseTokenResponse, error)
 	GetDetails(context.Context, *GetDetailsRequest) (*User, error)
-	Update(context.Context, *User) (*UpdateAccountResponse, error)
+	Update(context.Context, *UpdateRequest) (*UpdateResponse, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -110,7 +110,7 @@ func (UnimplementedAuthServiceServer) ParseToken(context.Context, *ParseTokenReq
 func (UnimplementedAuthServiceServer) GetDetails(context.Context, *GetDetailsRequest) (*User, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetDetails not implemented")
 }
-func (UnimplementedAuthServiceServer) Update(context.Context, *User) (*UpdateAccountResponse, error) {
+func (UnimplementedAuthServiceServer) Update(context.Context, *UpdateRequest) (*UpdateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
@@ -199,7 +199,7 @@ func _AuthService_GetDetails_Handler(srv interface{}, ctx context.Context, dec f
 }
 
 func _AuthService_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(User)
+	in := new(UpdateRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -211,7 +211,7 @@ func _AuthService_Update_Handler(srv interface{}, ctx context.Context, dec func(
 		FullMethod: "/AuthService/update",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).Update(ctx, req.(*User))
+		return srv.(AuthServiceServer).Update(ctx, req.(*UpdateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

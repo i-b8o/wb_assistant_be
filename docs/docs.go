@@ -42,7 +42,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/pb.User"
+                            "$ref": "#/definitions/pb.UpdateRequest"
                         }
                     }
                 ],
@@ -59,8 +59,49 @@ const docTemplate = `{
                             "$ref": "#/definitions/handler.errorResponse"
                         }
                     },
-                    "404": {
-                        "description": "Not Found",
+                    "default": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/handler.errorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/sign-in": {
+            "post": {
+                "description": "sign in to account",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "SignIn",
+                "operationId": "sign-in-account",
+                "parameters": [
+                    {
+                        "description": "account info",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/pb.GenerateTokenRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/pb.GenerateTokenResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "$ref": "#/definitions/handler.errorResponse"
                         }
@@ -118,12 +159,6 @@ const docTemplate = `{
                             "$ref": "#/definitions/handler.errorResponse"
                         }
                     },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/handler.errorResponse"
-                        }
-                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
@@ -171,22 +206,32 @@ const docTemplate = `{
                 }
             }
         },
-        "pb.User": {
+        "pb.GenerateTokenRequest": {
             "type": "object",
             "properties": {
                 "Email": {
                     "type": "string"
                 },
-                "Expires": {
+                "Password": {
                     "type": "string"
-                },
+                }
+            }
+        },
+        "pb.GenerateTokenResponse": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "pb.UpdateRequest": {
+            "type": "object",
+            "properties": {
                 "ID": {
                     "type": "integer"
                 },
                 "Password": {
-                    "type": "string"
-                },
-                "Type": {
                     "type": "string"
                 },
                 "Username": {

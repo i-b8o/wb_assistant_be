@@ -11,7 +11,7 @@ type Authorization interface {
 	CreateUser(ctx context.Context, username, email, password string) (*pb.CreateUserResponse, error)
 	GetUserID(email, password string) (int, error)
 	GetDetails(userId int32) (*pb.User, error)
-	Update(in *pb.User) (*pb.UpdateAccountResponse, error)
+	Update(in *pb.UpdateRequest) (*pb.UpdateResponse, error)
 }
 
 type Repository struct {

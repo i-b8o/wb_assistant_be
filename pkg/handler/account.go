@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/bogach-ivan/wb_assistant_be/pb"
@@ -15,10 +14,9 @@ import (
 // @ID update-account
 // @Accept json
 // @Produce json
-// @Param input body pb.User true "account info"
+// @Param input body pb.UpdateRequest true "account info"
 // @Success 200 {integer} integer 1
-// @Failure 400,404 {object} errorResponse
-// @Failure 500 {object} errorResponse
+// @Failure 400 {object} errorResponse
 // @Failure default {object} errorResponse
 // @Router /account/update [post]
 func (h *Handler) update(c *gin.Context) {
@@ -27,20 +25,17 @@ func (h *Handler) update(c *gin.Context) {
 		return
 	}
 
-	input := &pb.User{}
+	input := &pb.UpdateRequest{}
 	if err = c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	if input.Email == "" && input.Expires == "" && input.Password == "" && input.Type == "" && input.Username == "" {
+	if input.Username == "" && input.Password == "" {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
-
 	input.ID = id
-	fmt.Printf("%s %s", input.Username, input.Password)
-
 	_, err = h.client.Update(c, input)
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())

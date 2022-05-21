@@ -67,7 +67,7 @@ func (s *AuthService) GenerateToken(ctx context.Context, in *pb.GenerateTokenReq
 	if err != nil {
 		return &pb.GenerateTokenResponse{}, err
 	}
-	return &pb.GenerateTokenResponse{ID: t}, nil
+	return &pb.GenerateTokenResponse{Token: t}, nil
 }
 
 func (s *AuthService) ParseToken(ctx context.Context, in *pb.ParseTokenRequest) (*pb.ParseTokenResponse, error) {
@@ -94,9 +94,11 @@ func (s *AuthService) GetDetails(ctx context.Context, in *pb.GetDetailsRequest) 
 	return s.repo.GetDetails(in.ID)
 }
 
-func (s *AuthService) Update(ctx context.Context, in *pb.User) (*pb.UpdateAccountResponse, error) {
+func (s *AuthService) Update(ctx context.Context, in *pb.UpdateRequest) (*pb.UpdateResponse, error) {
 	if in.Password != "" {
+
 		in.Password = generatePasswordHash(in.Password)
+		fmt.Println("AAAAAAAAAAAAA" + in.Password)
 	}
 	return s.repo.Update(in)
 }

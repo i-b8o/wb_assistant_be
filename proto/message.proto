@@ -28,7 +28,7 @@ message GenerateTokenRequest{
 
 
 message GenerateTokenResponse{
-    string ID = 1;
+    string token = 1;
 }
 
 message ParseTokenRequest {
@@ -42,6 +42,12 @@ message GetDetailsRequest {
     int32 ID = 1;
 }
 
-message UpdateAccountResponse {
+message UpdateRequest {
+    int32 ID          = 1;
+    string Username    = 2;
+    string Password    = 3;
+}
+
+message UpdateResponse {
 
 }

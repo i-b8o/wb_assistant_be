@@ -33,7 +33,7 @@ func (r *AuthMySQL) CreateUser(ctx context.Context, username, email, password st
 	var datetime = time.Now()
 	t2 := datetime.AddDate(0, 0, 7)
 	dt := t2.Format(time.RFC3339)
-	res, err := stmt.ExecContext(ctx, username, email, password, dt, "free")
+	res, err := stmt.ExecContext(ctx, username, email, password, dt, "none")
 	if err != nil {
 		return &pb.CreateUserResponse{ID: 0}, err
 	}
@@ -66,13 +66,10 @@ func (r *AuthMySQL) GetDetails(userId int32) (*pb.User, error) {
 	return user, nil
 }
 
-func (r *AuthMySQL) Update(in *pb.User) (*pb.UpdateAccountResponse, error) {
+func (r *AuthMySQL) Update(in *pb.UpdateRequest) (*pb.UpdateResponse, error) {
 
 	setValues := make([]string, 0)
 	args := make([]interface{}, 0)
-
-	fmt.Println(".Password: |" + in.Password + "|")
-	fmt.Println(".Username: " + in.Username)
 
 	if in.Password != "" {
 		setValues = append(setValues, "password=?")
@@ -93,5 +90,5 @@ func (r *AuthMySQL) Update(in *pb.User) (*pb.UpdateAccountResponse, error) {
 		return nil, err
 	}
 
-	return &pb.UpdateAccountResponse{}, nil
+	return &pb.UpdateResponse{}, nil
 }

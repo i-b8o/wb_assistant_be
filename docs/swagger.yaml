@@ -19,17 +19,23 @@ definitions:
       ID:
         type: integer
     type: object
-  pb.User:
+  pb.GenerateTokenRequest:
     properties:
       Email:
         type: string
-      Expires:
+      Password:
         type: string
+    type: object
+  pb.GenerateTokenResponse:
+    properties:
+      token:
+        type: string
+    type: object
+  pb.UpdateRequest:
+    properties:
       ID:
         type: integer
       Password:
-        type: string
-      Type:
         type: string
       Username:
         type: string
@@ -53,7 +59,7 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/pb.User'
+          $ref: '#/definitions/pb.UpdateRequest'
       produces:
       - application/json
       responses:
@@ -65,8 +71,37 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/handler.errorResponse'
-        "404":
-          description: Not Found
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: update account
+      tags:
+      - account
+  /auth/sign-in:
+    post:
+      consumes:
+      - application/json
+      description: sign in to account
+      operationId: sign-in-account
+      parameters:
+      - description: account info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/pb.GenerateTokenRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/pb.GenerateTokenResponse'
+        "400":
+          description: Bad Request
           schema:
             $ref: '#/definitions/handler.errorResponse'
         "500":
@@ -77,11 +112,9 @@ paths:
           description: ""
           schema:
             $ref: '#/definitions/handler.errorResponse'
-      security:
-      - ApiKeyAuth: []
-      summary: update account
+      summary: SignIn
       tags:
-      - account
+      - auth
   /auth/sign-up:
     post:
       consumes:
@@ -104,10 +137,6 @@ paths:
             $ref: '#/definitions/pb.CreateUserResponse'
         "400":
           description: Bad Request
-          schema:
-            $ref: '#/definitions/handler.errorResponse'
-        "404":
-          description: Not Found
           schema:
             $ref: '#/definitions/handler.errorResponse'
         "500":

@@ -15,7 +15,7 @@ import (
 // @Produce json
 // @Param input body pb.CreateUserRequest true "account info"
 // @Success 200 {object} pb.CreateUserResponse 1
-// @Failure 400,404 {object} errorResponse
+// @Failure 400 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Failure default {object} errorResponse
 // @Router /auth/sign-up [post]
@@ -35,6 +35,18 @@ func (h *Handler) signUp(c *gin.Context) {
 	c.JSON(http.StatusOK, map[string]interface{}{"id": id})
 }
 
+// @Summary SignIn
+// @Tags auth
+// @Description sign in to account
+// @ID sign-in-account
+// @Accept json
+// @Produce json
+// @Param input body pb.GenerateTokenRequest true "account info"
+// @Success 200 {object} pb.GenerateTokenResponse 1
+// @Failure 400 {object} errorResponse
+// @Failure 500 {object} errorResponse
+// @Failure default {object} errorResponse
+// @Router /auth/sign-in [post]
 func (h *Handler) signIn(c *gin.Context) {
 	req := &pb.GenerateTokenRequest{}
 	err := c.BindJSON(&req)
@@ -48,7 +60,7 @@ func (h *Handler) signIn(c *gin.Context) {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
-	c.JSON(http.StatusOK, map[string]interface{}{"token": resp.ID})
+	c.JSON(http.StatusOK, map[string]interface{}{"token": resp.Token})
 }
 
 func (h *Handler) confirmation(c *gin.Context) {
