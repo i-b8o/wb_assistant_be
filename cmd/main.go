@@ -15,6 +15,7 @@ import (
 	"google.golang.org/grpc"
 )
 
+// TODO Perform telgram notification about erros
 // @title WB Assistant API
 // @version 1.0
 // @description API Server for WB Assistant
