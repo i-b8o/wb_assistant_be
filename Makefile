@@ -8,3 +8,6 @@ git:
 	git commit -a -m "$m"
 	git push -u origin main
 
+
+swag:
+	swag init -g cmd/main.go

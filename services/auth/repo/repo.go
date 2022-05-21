@@ -8,8 +8,10 @@ import (
 )
 
 type Authorization interface {
-	// CreateUser(user api.User) (int, error)
-	CreateUser(context.Context, *pb.User) (*pb.CreateUserResponse, error)
+	CreateUser(ctx context.Context, username, email, password string) (*pb.CreateUserResponse, error)
+	GetUserID(email, password string) (int, error)
+	GetDetails(userId int32) (*pb.User, error)
+	Update(in *pb.User) (*pb.UpdateAccountResponse, error)
 }
 
 type Repository struct {

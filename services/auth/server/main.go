@@ -81,10 +81,22 @@ func main() {
 	}
 	logrus.Printf("start server on address %s", address)
 
-	err = grpcServer.Serve(listener)
-	if err != nil {
-		logrus.Fatal("cannot start server: ", err)
-	}
+	go func() {
+		err = grpcServer.Serve(listener)
+		if err != nil {
+			logrus.Fatal("cannot start server: ", err)
+		}
+	}()
+	logrus.Print("WB Assistant GRPC Server started")
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
+	<-quit
+
+	logrus.Print("WB Assistant GRPC Server Shutting Down")
+
+	grpcServer.Stop()
+
 }
 func initConfig() error {
 	viper.AddConfigPath("configs")

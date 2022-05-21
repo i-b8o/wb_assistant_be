@@ -3,6 +3,10 @@ package handler
 import (
 	"github.com/bogach-ivan/wb_assistant_be/pb"
 	"github.com/gin-gonic/gin"
+	swaggerfiles "github.com/swaggo/files"     // swagger embed files
+	ginSwagger "github.com/swaggo/gin-swagger" // gin-swagger middleware
+
+	_ "github.com/bogach-ivan/wb_assistant_be/docs"
 )
 
 type Handler struct {
@@ -17,6 +21,7 @@ func NewHandler(client pb.AuthServiceClient) *Handler {
 
 func (h *Handler) InitRoutes() *gin.Engine {
 	router := gin.New()
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
 	// Create groups
 	auth := router.Group("/auth")
@@ -31,7 +36,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 	account := router.Group("/account", h.userIdentity)
 	{
-		account.POST("/extend", h.extend)
+		account.POST("/update", h.update)
 		account.GET("/details", h.details)
 	}
 

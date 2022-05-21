@@ -2,6 +2,7 @@ package handler
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -27,12 +28,12 @@ func (h *Handler) userIdentity(c *gin.Context) {
 		return
 	}
 
-	userId, err := h.client.ParseToken(c, &pb.ParseTokenRequest{Token: headerParts[1]})
+	resp, err := h.client.ParseToken(c, &pb.ParseTokenRequest{Token: headerParts[1]})
 	if err != nil {
 		newErrorResponse(c, http.StatusUnauthorized, err.Error())
 		return
 	}
-	c.Set(userCtx, userId)
+	c.Set(userCtx, resp.ID)
 }
 
 func getUserID(c *gin.Context) (int32, error) {
@@ -41,10 +42,12 @@ func getUserID(c *gin.Context) (int32, error) {
 		newErrorResponse(c, http.StatusInternalServerError, "user id not found")
 		return 0, errors.New("user id not found")
 	}
-	idInt32, ok := id.(int32)
+	fmt.Printf("sadsadasdasd%d\n", id)
+	idInt, ok := id.(int32)
+	fmt.Printf("aaaaa%d\n", idInt)
 	if !ok {
 		newErrorResponse(c, http.StatusInternalServerError, "user id is of invalid type")
 		return 0, errors.New("user id not found")
 	}
-	return idInt32, nil
+	return idInt, nil
 }

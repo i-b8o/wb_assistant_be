@@ -35,15 +35,16 @@ func NewAuthService(repo repo.AuthMySQL) *AuthService {
 	}
 }
 
-func (s *AuthService) CreateUser(ctx context.Context, user *pb.User) (*pb.CreateUserResponse, error) {
-	// Befor create hash password
-	user.Password = generatePasswordHash(user.Password)
-	return s.repo.CreateUser(ctx, user)
-}
+func (s *AuthService) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*pb.CreateUserResponse, error) {
+	username := req.GetUsername()
+	email := req.GetEmail()
+	password := req.GetPassword()
 
-// func (s *AuthService) GetUser(ctx context.Context, req *pb.GetUserRequest) (*pb.User, error) {
-// 	return s.repo.GetUser(ctx, req)
-// }
+	// Befor create hash password
+	password = generatePasswordHash(password)
+
+	return s.repo.CreateUser(ctx, username, email, password)
+}
 
 func generatePasswordHash(password string) string {
 	hash := sha1.New()
@@ -91,4 +92,11 @@ func (s *AuthService) ParseToken(ctx context.Context, in *pb.ParseTokenRequest) 
 
 func (s *AuthService) GetDetails(ctx context.Context, in *pb.GetDetailsRequest) (*pb.User, error) {
 	return s.repo.GetDetails(in.ID)
+}
+
+func (s *AuthService) Update(ctx context.Context, in *pb.User) (*pb.UpdateAccountResponse, error) {
+	if in.Password != "" {
+		in.Password = generatePasswordHash(in.Password)
+	}
+	return s.repo.Update(in)
 }

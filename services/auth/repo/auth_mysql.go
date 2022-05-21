@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/bogach-ivan/wb_assistant_be/pb"
@@ -21,7 +22,7 @@ func NewAuthMySQL(db *sql.DB) *AuthMySQL {
 }
 
 // TODO perform setting of db connection timeout and so on
-func (r *AuthMySQL) CreateUser(ctx context.Context, user *pb.User) (*pb.CreateUserResponse, error) {
+func (r *AuthMySQL) CreateUser(ctx context.Context, username, email, password string) (*pb.CreateUserResponse, error) {
 	query := fmt.Sprintf("INSERT INTO %s (username, email, password, expires, type) values (?, ?, ?, ?, ?)", usersTable)
 	stmt, err := r.db.PrepareContext(ctx, query)
 	if err != nil {
@@ -32,7 +33,7 @@ func (r *AuthMySQL) CreateUser(ctx context.Context, user *pb.User) (*pb.CreateUs
 	var datetime = time.Now()
 	t2 := datetime.AddDate(0, 0, 7)
 	dt := t2.Format(time.RFC3339)
-	res, err := stmt.ExecContext(ctx, user.Username, user.Email, user.Password, dt, "free")
+	res, err := stmt.ExecContext(ctx, username, email, password, dt, "free")
 	if err != nil {
 		return &pb.CreateUserResponse{ID: 0}, err
 	}
@@ -58,9 +59,39 @@ func (r *AuthMySQL) GetUserID(email, password string) (int, error) {
 func (r *AuthMySQL) GetDetails(userId int32) (*pb.User, error) {
 	user := &pb.User{}
 	query := fmt.Sprintf("SELECT id,username,email,password,expires,type FROM %s WHERE id=?", usersTable)
-	err := r.db.QueryRow(query, userId).Scan(&user)
+	err := r.db.QueryRow(query, userId).Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.Expires, &user.Type)
 	if err != nil {
 		return &pb.User{}, err
 	}
 	return user, nil
+}
+
+func (r *AuthMySQL) Update(in *pb.User) (*pb.UpdateAccountResponse, error) {
+
+	setValues := make([]string, 0)
+	args := make([]interface{}, 0)
+
+	fmt.Println(".Password: |" + in.Password + "|")
+	fmt.Println(".Username: " + in.Username)
+
+	if in.Password != "" {
+		setValues = append(setValues, "password=?")
+		args = append(args, in.Password)
+	}
+
+	if in.Username != "" {
+		setValues = append(setValues, "username=?")
+		args = append(args, in.Username)
+	}
+
+	setQuery := strings.Join(setValues, ", ")
+
+	query := fmt.Sprintf("UPDATE %s SET %s WHERE id=?", usersTable, setQuery)
+
+	args = append(args, in.ID)
+	if _, err := r.db.Exec(query, args...); err != nil {
+		return nil, err
+	}
+
+	return &pb.UpdateAccountResponse{}, nil
 }
