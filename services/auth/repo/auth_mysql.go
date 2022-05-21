@@ -92,18 +92,47 @@ func (r *AuthMySQL) Update(in *pb.UpdateRequest) (*pb.UpdateResponse, error) {
 	return &pb.UpdateResponse{}, nil
 }
 
-func (r *AuthMySQL) ConfirmToken(ctx context.Context, in *pb.ConfirmTokenRequest) (*pb.ConfirmTokenResponse, error) {
+func (r *AuthMySQL) InsertEmailConfirmToken(ctx context.Context, in *pb.InsertEmailConfirmTokenRequest) (*pb.InsertEmailConfirmTokenResponse, error) {
 	query := fmt.Sprintf("INSERT INTO %s (user_id, token) values (?, ?)", verifiedsTable)
 	stmt, err := r.db.PrepareContext(ctx, query)
 	if err != nil {
-		return &pb.ConfirmTokenResponse{}, err
+		return &pb.InsertEmailConfirmTokenResponse{}, err
 	}
 	defer stmt.Close()
 
 	_, err = stmt.ExecContext(ctx, in.ID, in.Token)
 	if err != nil {
-		return &pb.ConfirmTokenResponse{}, err
+		return &pb.InsertEmailConfirmTokenResponse{}, err
 	}
 
-	return &pb.ConfirmTokenResponse{}, nil
+	return &pb.InsertEmailConfirmTokenResponse{}, nil
+}
+
+func (r *AuthMySQL) CheckAndDelEmailConfirmToken(ctx context.Context, in *pb.CheckAndDelEmailConfirmTokenRequest) (*pb.CheckAndDelEmailConfirmTokenResponse, error) {
+	var id int32
+	// Get user ID
+	query := fmt.Sprintf("SELECT user_id FROM %s WHERE token=?", verifiedsTable)
+	err := r.db.QueryRow(query, in.Token).Scan(&id)
+	if err != nil {
+		return &pb.CheckAndDelEmailConfirmTokenResponse{}, err
+	}
+	// Delete row
+	query = fmt.Sprintf("DELETE FROM %s WHERE user_id=?", verifiedsTable)
+	stmt, err := r.db.PrepareContext(ctx, query)
+	if err != nil {
+		return &pb.CheckAndDelEmailConfirmTokenResponse{}, err
+	}
+	defer stmt.Close()
+
+	_, err = stmt.ExecContext(ctx, id)
+	if err != nil {
+		return &pb.CheckAndDelEmailConfirmTokenResponse{}, err
+	}
+	// Update type
+	query = fmt.Sprintf("UPDATE %s SET type='free' WHERE id=?", usersTable)
+	fmt.Println(query)
+	if _, err := r.db.Exec(query, id); err != nil {
+		return nil, err
+	}
+	return &pb.CheckAndDelEmailConfirmTokenResponse{}, nil
 }

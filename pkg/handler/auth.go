@@ -36,13 +36,13 @@ func (h *Handler) signUp(c *gin.Context) {
 
 	// Add confirm token to db
 	token := nonsense.RandSeq(100)
-	_, err = h.authClient.ConfirmToken(c, &pb.ConfirmTokenRequest{ID: resp.ID, Token: token})
+	_, err = h.authClient.InsertEmailConfirmToken(c, &pb.InsertEmailConfirmTokenRequest{ID: resp.ID, Token: token})
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 	// Send the confirm token to a user email
-	_, err = h.mailClient.Confirm(c, &pb.MailConfirmRequest{Url: "bdrop.net/" + token, Email: input.Email, Pass: input.Password})
+	_, err = h.mailClient.Confirm(c, &pb.MailConfirmRequest{Url: "bdrop.net/auth/confirmation/" + token, Email: input.Email, Pass: input.Password})
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -79,7 +79,16 @@ func (h *Handler) signIn(c *gin.Context) {
 }
 
 func (h *Handler) confirmation(c *gin.Context) {
+	token := c.Param("token")
 
+	_, err := h.authClient.CheckAndDelEmailConfirmToken(c, &pb.CheckAndDelEmailConfirmTokenRequest{
+		Token: token,
+	})
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	c.JSON(http.StatusOK, map[string]interface{}{"token": "ok"})
 }
 
 func (h *Handler) resend(c *gin.Context) {

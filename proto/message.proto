@@ -20,12 +20,19 @@ message CreateUserResponse {
     int32 ID = 1;
 }
 
-message ConfirmTokenRequest {
+message InsertEmailConfirmTokenRequest {
     int32 ID     = 1;
     string token = 2;
 }
 
-message ConfirmTokenResponse {}
+message InsertEmailConfirmTokenResponse {}
+
+message CheckAndDelEmailConfirmTokenRequest {
+    string token = 1;
+}
+message CheckAndDelEmailConfirmTokenResponse {
+
+}
 
 message GenerateTokenRequest{
     string Email    = 1;

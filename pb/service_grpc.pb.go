@@ -23,7 +23,8 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AuthServiceClient interface {
 	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error)
-	ConfirmToken(ctx context.Context, in *ConfirmTokenRequest, opts ...grpc.CallOption) (*ConfirmTokenResponse, error)
+	InsertEmailConfirmToken(ctx context.Context, in *InsertEmailConfirmTokenRequest, opts ...grpc.CallOption) (*InsertEmailConfirmTokenResponse, error)
+	CheckAndDelEmailConfirmToken(ctx context.Context, in *CheckAndDelEmailConfirmTokenRequest, opts ...grpc.CallOption) (*CheckAndDelEmailConfirmTokenResponse, error)
 	GenerateToken(ctx context.Context, in *GenerateTokenRequest, opts ...grpc.CallOption) (*GenerateTokenResponse, error)
 	ParseToken(ctx context.Context, in *ParseTokenRequest, opts ...grpc.CallOption) (*ParseTokenResponse, error)
 	GetDetails(ctx context.Context, in *GetDetailsRequest, opts ...grpc.CallOption) (*User, error)
@@ -47,9 +48,18 @@ func (c *authServiceClient) CreateUser(ctx context.Context, in *CreateUserReques
 	return out, nil
 }
 
-func (c *authServiceClient) ConfirmToken(ctx context.Context, in *ConfirmTokenRequest, opts ...grpc.CallOption) (*ConfirmTokenResponse, error) {
-	out := new(ConfirmTokenResponse)
-	err := c.cc.Invoke(ctx, "/AuthService/confirmToken", in, out, opts...)
+func (c *authServiceClient) InsertEmailConfirmToken(ctx context.Context, in *InsertEmailConfirmTokenRequest, opts ...grpc.CallOption) (*InsertEmailConfirmTokenResponse, error) {
+	out := new(InsertEmailConfirmTokenResponse)
+	err := c.cc.Invoke(ctx, "/AuthService/insertEmailConfirmToken", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) CheckAndDelEmailConfirmToken(ctx context.Context, in *CheckAndDelEmailConfirmTokenRequest, opts ...grpc.CallOption) (*CheckAndDelEmailConfirmTokenResponse, error) {
+	out := new(CheckAndDelEmailConfirmTokenResponse)
+	err := c.cc.Invoke(ctx, "/AuthService/checkAndDelEmailConfirmToken", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -97,7 +107,8 @@ func (c *authServiceClient) Update(ctx context.Context, in *UpdateRequest, opts 
 // for forward compatibility
 type AuthServiceServer interface {
 	CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error)
-	ConfirmToken(context.Context, *ConfirmTokenRequest) (*ConfirmTokenResponse, error)
+	InsertEmailConfirmToken(context.Context, *InsertEmailConfirmTokenRequest) (*InsertEmailConfirmTokenResponse, error)
+	CheckAndDelEmailConfirmToken(context.Context, *CheckAndDelEmailConfirmTokenRequest) (*CheckAndDelEmailConfirmTokenResponse, error)
 	GenerateToken(context.Context, *GenerateTokenRequest) (*GenerateTokenResponse, error)
 	ParseToken(context.Context, *ParseTokenRequest) (*ParseTokenResponse, error)
 	GetDetails(context.Context, *GetDetailsRequest) (*User, error)
@@ -112,8 +123,11 @@ type UnimplementedAuthServiceServer struct {
 func (UnimplementedAuthServiceServer) CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
 }
-func (UnimplementedAuthServiceServer) ConfirmToken(context.Context, *ConfirmTokenRequest) (*ConfirmTokenResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ConfirmToken not implemented")
+func (UnimplementedAuthServiceServer) InsertEmailConfirmToken(context.Context, *InsertEmailConfirmTokenRequest) (*InsertEmailConfirmTokenResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method InsertEmailConfirmToken not implemented")
+}
+func (UnimplementedAuthServiceServer) CheckAndDelEmailConfirmToken(context.Context, *CheckAndDelEmailConfirmTokenRequest) (*CheckAndDelEmailConfirmTokenResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CheckAndDelEmailConfirmToken not implemented")
 }
 func (UnimplementedAuthServiceServer) GenerateToken(context.Context, *GenerateTokenRequest) (*GenerateTokenResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GenerateToken not implemented")
@@ -158,20 +172,38 @@ func _AuthService_CreateUser_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
-func _AuthService_ConfirmToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ConfirmTokenRequest)
+func _AuthService_InsertEmailConfirmToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(InsertEmailConfirmTokenRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AuthServiceServer).ConfirmToken(ctx, in)
+		return srv.(AuthServiceServer).InsertEmailConfirmToken(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/AuthService/confirmToken",
+		FullMethod: "/AuthService/insertEmailConfirmToken",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).ConfirmToken(ctx, req.(*ConfirmTokenRequest))
+		return srv.(AuthServiceServer).InsertEmailConfirmToken(ctx, req.(*InsertEmailConfirmTokenRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_CheckAndDelEmailConfirmToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CheckAndDelEmailConfirmTokenRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).CheckAndDelEmailConfirmToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/AuthService/checkAndDelEmailConfirmToken",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).CheckAndDelEmailConfirmToken(ctx, req.(*CheckAndDelEmailConfirmTokenRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -260,8 +292,12 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _AuthService_CreateUser_Handler,
 		},
 		{
-			MethodName: "confirmToken",
-			Handler:    _AuthService_ConfirmToken_Handler,
+			MethodName: "insertEmailConfirmToken",
+			Handler:    _AuthService_InsertEmailConfirmToken_Handler,
+		},
+		{
+			MethodName: "checkAndDelEmailConfirmToken",
+			Handler:    _AuthService_CheckAndDelEmailConfirmToken_Handler,
 		},
 		{
 			MethodName: "generateToken",

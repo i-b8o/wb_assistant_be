@@ -103,6 +103,10 @@ func (s *AuthService) Update(ctx context.Context, in *pb.UpdateRequest) (*pb.Upd
 	return s.repo.Update(in)
 }
 
-func (s *AuthService) ConfirmToken(ctx context.Context, in *pb.ConfirmTokenRequest) (*pb.ConfirmTokenResponse, error) {
-	return s.repo.ConfirmToken(ctx, in)
+func (s *AuthService) InsertEmailConfirmToken(ctx context.Context, in *pb.InsertEmailConfirmTokenRequest) (*pb.InsertEmailConfirmTokenResponse, error) {
+	return s.repo.InsertEmailConfirmToken(ctx, in)
+}
+
+func (s *AuthService) CheckAndDelEmailConfirmToken(ctx context.Context, in *pb.CheckAndDelEmailConfirmTokenRequest) (*pb.CheckAndDelEmailConfirmTokenResponse, error) {
+	return s.repo.CheckAndDelEmailConfirmToken(ctx, in)
 }
