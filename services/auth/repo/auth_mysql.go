@@ -57,11 +57,17 @@ func (r *AuthMySQL) GetUserID(email, password string) (int, error) {
 
 func (r *AuthMySQL) GetDetails(userId int32) (*pb.User, error) {
 	user := &pb.User{}
-	query := fmt.Sprintf("SELECT id,username,email,expires,type FROM %s WHERE id=?", usersTable)
-	err := r.db.QueryRow(query, userId).Scan(&user.ID, &user.Username, &user.Email, &user.Expires, &user.Type)
+	var days int32
+	query := fmt.Sprintf("SELECT id,username,email,expires,type,DATEDIFF(CURDATE(), expires) FROM %s WHERE id=?", usersTable)
+	err := r.db.QueryRow(query, userId).Scan(&user.ID, &user.Username, &user.Email, &user.Expires, &user.Type, &days)
 	if err != nil {
 		return &pb.User{}, err
 	}
+	// Expired?
+	if days > 0 {
+		user.Type = "end"
+	}
+
 	return user, nil
 }
 
