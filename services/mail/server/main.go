@@ -49,7 +49,6 @@ func unixSig() {
 func main() {
 	defer recoveryFunction()
 	go unixSig()
-	port := os.Args[1]
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 
 	// GRPC client creation
@@ -59,7 +58,7 @@ func main() {
 	server := mailservice.NewServer(store)
 	pb.RegisterMailServiceServer(grpcServer, server)
 
-	address := fmt.Sprintf("0.0.0.0:%s", port)
+	address := fmt.Sprintf("0.0.0.0:%s", "1982")
 	listener, err := net.Listen("tcp", address)
 	if err != nil {
 		log.Fatal("cannot start server: ", err)

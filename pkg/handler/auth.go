@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// TODO Validate email address
 // @Summary SignUp
 // @Tags auth
 // @Description create account

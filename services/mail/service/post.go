@@ -41,6 +41,7 @@ func call(command string) {
 	}
 }
 
+// TODO perform grpc response with status about delivered mail
 func (post *PostFix) Confirm(url, email, pass string) *pb.MailConfirmResponse {
 	post.mutex.Lock()
 	defer post.mutex.Unlock()

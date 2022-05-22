@@ -17,6 +17,6 @@ swag:
 	swag init -g cmd/main.go
 
 mail:
-	GOOS=linux GOARCH=amd64 go build -o c -v services/mail/server/*
-	scp c root@$(SEND_MAIL_IP):/root/c
-	rm c
+	GOOS=linux GOARCH=amd64 go build -o mail_service -v services/mail/server/*
+	scp mail_service root@$(SEND_MAIL_IP):/bin/mail_service
+	rm mail_service

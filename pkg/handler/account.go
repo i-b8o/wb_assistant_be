@@ -66,7 +66,5 @@ func (h *Handler) details(c *gin.Context) {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
-	c.JSON(http.StatusOK, map[string]interface{}{
-		"user": user,
-	})
+	c.JSON(http.StatusOK, user)
 }
