@@ -2,13 +2,13 @@ package handler
 
 import (
 	"net/http"
+	"net/mail"
 
 	"github.com/bogach-ivan/nonsense"
 	"github.com/bogach-ivan/wb_assistant_be/pb"
 	"github.com/gin-gonic/gin"
 )
 
-// TODO Validate email address
 // @Summary SignUp
 // @Tags auth
 // @Description create account
@@ -24,6 +24,11 @@ import (
 func (h *Handler) signUp(c *gin.Context) {
 	input := &pb.CreateUserRequest{}
 	err := c.BindJSON(&input)
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+	_, err = mail.ParseAddress(input.Email)
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
