@@ -21,7 +21,6 @@ func NewAuthMySQL(db *sql.DB) *AuthMySQL {
 	}
 }
 
-// TODO perform setting of db connection timeout and so on
 func (r *AuthMySQL) CreateUser(ctx context.Context, username, email, password string) (*pb.CreateUserResponse, error) {
 	query := fmt.Sprintf("INSERT INTO %s (username, email, password, expires, type) values (?, ?, ?, ?, ?)", usersTable)
 	stmt, err := r.db.PrepareContext(ctx, query)
@@ -136,7 +135,7 @@ func (r *AuthMySQL) CheckAndDelEmailConfirmToken(ctx context.Context, in *pb.Che
 	}
 	// Update type
 	query = fmt.Sprintf("UPDATE %s SET type='free' WHERE id=?", usersTable)
-	fmt.Println(query)
+
 	if _, err := r.db.Exec(query, id); err != nil {
 		return nil, err
 	}

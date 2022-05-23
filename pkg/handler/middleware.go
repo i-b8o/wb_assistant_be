@@ -2,7 +2,6 @@ package handler
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 	"strings"
 
@@ -21,7 +20,7 @@ func (h *Handler) userIdentity(c *gin.Context) {
 		newErrorResponse(c, http.StatusUnauthorized, "empty auth header")
 		return
 	}
-	fmt.Println(header)
+
 	headerParts := strings.Split(header, " ")
 	if len(headerParts) != 2 {
 		newErrorResponse(c, http.StatusUnauthorized, "invalid auth header")

@@ -43,7 +43,6 @@ func main() {
 	authClient := pb.NewAuthServiceClient(authClientConn)
 
 	addrMail := fmt.Sprintf("%s:%s", viper.GetString("mail.ip"), viper.GetString("mail.port"))
-	fmt.Println(addrMail)
 	mailClientConn, err := grpc.Dial(addrMail, grpc.WithInsecure())
 	if err != nil {
 		logrus.Fatalf("error creating auth grpc connection: %s", err.Error())

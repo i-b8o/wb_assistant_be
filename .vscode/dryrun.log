@@ -1,0 +1,11 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory '/home/kvo/go/src/github.com/bogach-ivan/wb_assistant_be'
+ 
+protoc -I=proto/ --go_out=pb/ proto/*.proto
+ 
+protoc --go-grpc_out=pb/ proto/*.proto -I=proto/
+ 
+# protoc --dart_out=grpc:fe/welcome/packages/grpc_repository/lib/src/proto/ -Iproto proto/*.proto
+ 
+make: Leaving directory '/home/kvo/go/src/github.com/bogach-ivan/wb_assistant_be'
+ 

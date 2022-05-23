@@ -68,9 +68,13 @@ message MailConfirmRequest {
 	string email = 2;
 	string pass = 3;
 }
-message MailConfirmResponse {}
+message MailConfirmResponse {
+    string message = 1;
+}
 message ResetRequest {
 	string url = 1;
 	string email = 2;
 }
-message ResetResponse {}
+message ResetResponse {
+    string message = 1;
+}

@@ -21,9 +21,9 @@ import (
 func recoveryFunction() {
 	if recoveryMessage := recover(); recoveryMessage != nil {
 		nonsense.SendStringToTelegram("Server Panicking!")
-		fmt.Println(recoveryMessage)
+		logrus.Println(recoveryMessage)
 	}
-	fmt.Println("This is recovery function...")
+	logrus.Println("This is recovery function...")
 }
 
 func unixSig() {
@@ -58,7 +58,6 @@ func main() {
 		logrus.Fatalf("error loading env variables: %s", err.Error())
 	}
 
-	fmt.Println(os.Getenv("DB_PASSWORD"))
 	db, err := repo.NewMySQLDB(repo.Config{
 		Host:     viper.GetString("db.host"),
 		Username: viper.GetString("db.username"),

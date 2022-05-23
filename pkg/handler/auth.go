@@ -48,9 +48,13 @@ func (h *Handler) signUp(c *gin.Context) {
 		return
 	}
 	// Send the confirm token to a user email
-	_, err = h.mailClient.Confirm(c, &pb.MailConfirmRequest{Url: "bdrop.net/auth/confirmation/" + token, Email: input.Email, Pass: input.Password})
+	r, err := h.mailClient.Confirm(c, &pb.MailConfirmRequest{Url: "bdrop.net/auth/confirmation/" + token, Email: input.Email, Pass: input.Password})
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	if len(r.Message) > 0 {
+		newErrorResponse(c, http.StatusInternalServerError, r.Message)
 		return
 	}
 	c.JSON(http.StatusOK, map[string]interface{}{"id": resp.ID})
@@ -85,6 +89,7 @@ func (h *Handler) signIn(c *gin.Context) {
 }
 
 func (h *Handler) confirmation(c *gin.Context) {
+
 	token := c.Param("token")
 
 	_, err := h.authClient.CheckAndDelEmailConfirmToken(c, &pb.CheckAndDelEmailConfirmTokenRequest{

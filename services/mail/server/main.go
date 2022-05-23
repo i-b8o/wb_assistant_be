@@ -20,9 +20,9 @@ import (
 func recoveryFunction() {
 	if recoveryMessage := recover(); recoveryMessage != nil {
 		nonsense.SendStringToTelegram("Server Panicking!")
-		fmt.Println(recoveryMessage)
+		logrus.Println(recoveryMessage)
 	}
-	fmt.Println("This is recovery function...")
+	logrus.Println("This is recovery function...")
 }
 
 func unixSig() {
@@ -63,7 +63,7 @@ func main() {
 	if err != nil {
 		log.Fatal("cannot start server: ", err)
 	}
-	log.Printf("start server on address %s", address)
+	logrus.Printf("start server on address %s", address)
 
 	err = grpcServer.Serve(listener)
 	if err != nil {
