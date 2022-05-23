@@ -11,7 +11,7 @@ import (
 	"github.com/bogach-ivan/wb_assistant_be/pb"
 	"github.com/bogach-ivan/wb_assistant_be/pkg/handler"
 	"github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
+
 	"google.golang.org/grpc"
 )
 
@@ -20,7 +20,7 @@ import (
 // @version 1.0
 // @description API Server for WB Assistant
 
-// @host localhost:8080
+// @host 188.93.210.165:8080
 // @BasePath /
 
 // @securityDefinitions.apiKey ApiKeyAuth
@@ -29,20 +29,16 @@ import (
 
 func main() {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
-	err := initConfig()
-	if err != nil {
-		logrus.Fatalf("error initializing configs: %s", err.Error())
-	}
 
 	// GRPC client creation
-	addrAuth := fmt.Sprintf("%s:%s", viper.GetString("grpc.ip"), viper.GetString("grpc.port"))
+	addrAuth := fmt.Sprintf("%s:%s", os.Getenv("AUTH_SERVICE_IP"), os.Getenv("AUTH_SERVICE_PORT"))
 	authClientConn, err := grpc.Dial(addrAuth, grpc.WithInsecure())
 	if err != nil {
 		logrus.Fatalf("error creating auth grpc connection: %s", err.Error())
 	}
 	authClient := pb.NewAuthServiceClient(authClientConn)
 
-	addrMail := fmt.Sprintf("%s:%s", viper.GetString("mail.ip"), viper.GetString("mail.port"))
+	addrMail := fmt.Sprintf("%s:%s", os.Getenv("MAIL_SERVICE_IP"), os.Getenv("MAIL_SERVICE_PORT"))
 	mailClientConn, err := grpc.Dial(addrMail, grpc.WithInsecure())
 	if err != nil {
 		logrus.Fatalf("error creating auth grpc connection: %s", err.Error())
@@ -54,7 +50,7 @@ func main() {
 	srv := new(wb_assistant_be.Server)
 	// run server
 	go func() {
-		if err := srv.Run(viper.GetString("port"), handlers.InitRoutes()); err != nil {
+		if err := srv.Run(os.Getenv("API_SERVICE_PORT"), handlers.InitRoutes()); err != nil {
 			logrus.Fatalf("error occured while running http server: %s", err.Error())
 		}
 	}()
@@ -70,10 +66,4 @@ func main() {
 		logrus.Errorf("error occured on server shutting down: %s", err.Error())
 	}
 
-}
-
-func initConfig() error {
-	viper.AddConfigPath("configs")
-	viper.SetConfigName("config")
-	return viper.ReadInConfig()
 }

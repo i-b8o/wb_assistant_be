@@ -1,6 +1,9 @@
 [Service]
-WorkingDirectory=/home/admin
-ExecStart=/home/admin/p
+After=mysqld.service
+Requires=mysqld.service
+WorkingDirectory=/bin
+ExecStart=/bin/auth_service
+EnvironmentFile=/etc/auth_service/service.conf
 Restart=always
 StandardOutput=syslog
 StandardError=syslog

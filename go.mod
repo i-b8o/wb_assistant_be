@@ -3,7 +3,7 @@ module github.com/bogach-ivan/wb_assistant_be
 go 1.16
 
 require (
-	github.com/bogach-ivan/nonsense v0.0.0-20220521162249-5e906b5a1b23 // indirect
+	github.com/bogach-ivan/nonsense v0.0.0-20220521162249-5e906b5a1b23
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
 	github.com/gin-gonic/gin v1.7.7

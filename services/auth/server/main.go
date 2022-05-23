@@ -11,10 +11,10 @@ import (
 	"github.com/bogach-ivan/wb_assistant_be/pb"
 	"github.com/bogach-ivan/wb_assistant_be/services/auth/repo"
 	authservice "github.com/bogach-ivan/wb_assistant_be/services/auth/service"
-
-	"github.com/joho/godotenv"
-	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+
+	"github.com/sirupsen/logrus"
+
 	"google.golang.org/grpc"
 )
 
@@ -51,19 +51,15 @@ func main() {
 	defer recoveryFunction()
 	go unixSig()
 	err := initConfig()
-	port := viper.GetString("grpc.port")
-
-	err = godotenv.Load()
-	if err != nil {
-		logrus.Fatalf("error loading env variables: %s", err.Error())
-	}
+	port := os.Getenv("AUTH_SERVICE_PORT")
 
 	db, err := repo.NewMySQLDB(repo.Config{
-		Host:     viper.GetString("db.host"),
-		Username: viper.GetString("db.username"),
-		Password: os.Getenv("DB_PASSWORD"),
-		DBName:   viper.GetString("db.dbname"),
+		Host:     os.Getenv("AUTH_SERVICE_DB_HOST"),
+		Username: os.Getenv("AUTH_SERVICE_DB_USERNAME"),
+		Password: os.Getenv("AUTH_SERVICE_DB_PASSWORD"),
+		DBName:   os.Getenv("AUTH_SERVICE_DB_DBNAME"),
 	})
+
 	if err != nil {
 		logrus.Fatalf("failed to initialize db: %s", err.Error())
 	}

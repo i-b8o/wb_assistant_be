@@ -22,6 +22,8 @@ func NewHandler(authClient pb.AuthServiceClient, mailClient pb.MailServiceClient
 }
 
 func (h *Handler) InitRoutes() *gin.Engine {
+	gin.SetMode(gin.ReleaseMode)
+
 	router := gin.New()
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
