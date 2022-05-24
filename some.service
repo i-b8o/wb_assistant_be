@@ -1,6 +1,9 @@
+[Unit]
+Description=auth service
+After=mysql.service
+Wants=mysql.service
+Requires=mysql.service
 [Service]
-After=mysqld.service
-Requires=mysqld.service
 WorkingDirectory=/bin
 ExecStart=/bin/auth_service
 EnvironmentFile=/etc/auth_service/service.conf
