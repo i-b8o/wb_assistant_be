@@ -50,7 +50,7 @@ func (r *AuthMySQL) GetUserID(email, password string) (int, error) {
 	query := fmt.Sprintf("SELECT id  FROM %s WHERE email=? AND password=?", usersTable)
 	err := r.db.QueryRow(query, email, password).Scan(&id)
 	if err != nil {
-		return 0, err
+		return 0, nil
 	}
 	return id, nil
 }
