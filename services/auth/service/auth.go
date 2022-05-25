@@ -53,10 +53,7 @@ func generatePasswordHash(password string) string {
 	return fmt.Sprintf("%x", hash.Sum([]byte(salt)))
 }
 func (s *AuthService) GenerateToken(ctx context.Context, in *pb.GenerateTokenRequest) (*pb.GenerateTokenResponse, error) {
-	id, err := s.repo.GetUserID(in.Email, generatePasswordHash(in.Password))
-	if err != nil {
-		return &pb.GenerateTokenResponse{}, err
-	}
+	id := s.repo.GetUserID(in.Email, generatePasswordHash(in.Password))
 	if id == 0 {
 		return &pb.GenerateTokenResponse{Token: ""}, nil
 	}

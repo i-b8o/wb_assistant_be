@@ -44,15 +44,14 @@ func (r *AuthMySQL) CreateUser(ctx context.Context, username, email, password st
 	return &pb.CreateUserResponse{ID: int32(id)}, nil
 }
 
-
-func (r *AuthMySQL) GetUserID(email, password string) (int, error) {
+func (r *AuthMySQL) GetUserID(email, password string) int {
 	var id int
 	query := fmt.Sprintf("SELECT id  FROM %s WHERE email=? AND password=?", usersTable)
 	err := r.db.QueryRow(query, email, password).Scan(&id)
 	if err != nil {
-		return 0, nil
+		return 0
 	}
-	return id, nil
+	return id
 }
 
 func (r *AuthMySQL) GetDetails(userId int32) (*pb.User, error) {

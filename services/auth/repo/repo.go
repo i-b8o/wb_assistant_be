@@ -9,7 +9,7 @@ import (
 
 type Authorization interface {
 	CreateUser(ctx context.Context, username, email, password string) (*pb.CreateUserResponse, error)
-	GetUserID(email, password string) (int, error)
+	GetUserID(email, password string) int
 	GetDetails(userId int32) (*pb.User, error)
 	Update(in *pb.UpdateRequest) (*pb.UpdateResponse, error)
 	InsertEmailConfirmToken(ctx context.Context, in *pb.InsertEmailConfirmTokenRequest) (*pb.InsertEmailConfirmTokenResponse, error)

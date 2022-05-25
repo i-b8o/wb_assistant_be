@@ -1,7 +1,3 @@
-ENV	:= $(PWD)/.env
-
-include $(ENV)
-
 gen:
 	protoc -I=proto/ --go_out=pb/ proto/*.proto
 	protoc --go-grpc_out=pb/ proto/*.proto -I=proto/
