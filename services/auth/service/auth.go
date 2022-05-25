@@ -57,6 +57,9 @@ func (s *AuthService) GenerateToken(ctx context.Context, in *pb.GenerateTokenReq
 	if err != nil {
 		return &pb.GenerateTokenResponse{}, err
 	}
+	if id == 0 {
+		return &pb.GenerateTokenResponse{Token: ""}, nil
+	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &tokenClaims{
 		jwt.StandardClaims{ExpiresAt: time.Now().Add(12 * time.Hour).Unix(),
 			IssuedAt: time.Now().Unix()},
