@@ -34,6 +34,7 @@ func (h *Handler) signUp(c *gin.Context) {
 		return
 	}
 	// Create User
+	// TODO separate user exist from error
 	resp, err := h.authClient.CreateUser(c, input)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
@@ -80,7 +81,7 @@ func (h *Handler) signIn(c *gin.Context) {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
-	
+
 	_, err = mail.ParseAddress(req.Email)
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
