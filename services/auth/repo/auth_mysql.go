@@ -44,7 +44,7 @@ func (r *AuthMySQL) CreateUser(ctx context.Context, username, email, password st
 	return &pb.CreateUserResponse{ID: int32(id)}, nil
 }
 
-// TODO Returns error when user does not exisit while must return -1 for example
+
 func (r *AuthMySQL) GetUserID(email, password string) (int, error) {
 	var id int
 	query := fmt.Sprintf("SELECT id  FROM %s WHERE email=? AND password=?", usersTable)
