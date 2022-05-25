@@ -79,6 +79,12 @@ func (h *Handler) signIn(c *gin.Context) {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
+	
+	_, err = mail.ParseAddress(req.Email)
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
 
 	resp, err := h.authClient.GenerateToken(c, req)
 	if err != nil {
