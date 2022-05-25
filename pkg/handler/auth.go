@@ -91,6 +91,10 @@ func (h *Handler) signIn(c *gin.Context) {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
+	if len(resp.Token) == 0 {
+		c.Writer.WriteHeader(http.StatusNotFound)
+		return
+	}
 	c.JSON(http.StatusOK, map[string]interface{}{"token": resp.Token})
 }
 
