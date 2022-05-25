@@ -69,6 +69,7 @@ func (h *Handler) signUp(c *gin.Context) {
 // @Param input body pb.GenerateTokenRequest true "account info"
 // @Success 200 {object} pb.GenerateTokenResponse 1
 // @Failure 400 {object} errorResponse
+// @Failure 404 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Failure default {object} errorResponse
 // @Router /auth/sign-in [post]
