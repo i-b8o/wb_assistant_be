@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/bogach-ivan/nonsense"
@@ -25,8 +26,16 @@ func (h *Handler) updateEmailVerificationToken(c *gin.Context) {
 	if err != nil {
 		return
 	}
+
+	input := &pb.UpdateEmailVerificationTokenRequest{}
+	if err = c.BindJSON(&input); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
 	token := nonsense.RandSeq(100)
-	input := &pb.UpdateEmailVerificationTokenRequest{ID: id, Token: token}
+	input.Token = token
+	input.ID = id
 
 	_, err = h.authClient.UpdateEmailVerificationToken(c, input)
 	if err != nil {
@@ -35,6 +44,7 @@ func (h *Handler) updateEmailVerificationToken(c *gin.Context) {
 	}
 
 	// Send the confirm token to a user email
+	fmt.Println("bdrop.net/auth/confirmation/" + token + "e:" + input.Email + "P:" + input.Password)
 	r, err := h.mailClient.Confirm(c, &pb.MailConfirmRequest{Url: "bdrop.net/auth/confirmation/" + token, Email: input.Email, Pass: input.Password})
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
