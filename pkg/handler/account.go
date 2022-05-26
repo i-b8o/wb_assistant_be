@@ -19,7 +19,7 @@ import (
 // @Success 200 {integer} integer 1
 // @Failure 400 {object} errorResponse
 // @Failure default {object} errorResponse
-// @Router /account/update [post]
+// @Router /account/update-email-verification-token [post]
 func (h *Handler) updateEmailVerificationToken(c *gin.Context) {
 	id, err := getUserID(c)
 	if err != nil {

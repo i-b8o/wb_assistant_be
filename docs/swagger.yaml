@@ -130,6 +130,39 @@ paths:
       summary: update account
       tags:
       - account
+  /account/update-email-verification-token:
+    post:
+      consumes:
+      - application/json
+      description: update email verification token
+      operationId: update-email-verification-token
+      parameters:
+      - description: account info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/pb.UpdateEmailVerificationTokenRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: update email verification token
+      tags:
+      - account
   /auth/sign-in:
     post:
       consumes:
