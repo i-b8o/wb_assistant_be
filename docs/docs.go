@@ -327,16 +327,16 @@ const docTemplate = `{
         "pb.UpdateEmailVerificationTokenRequest": {
             "type": "object",
             "properties": {
+                "Email": {
+                    "type": "string"
+                },
                 "ID": {
                     "type": "integer"
                 },
-                "email": {
+                "Password": {
                     "type": "string"
                 },
-                "password": {
-                    "type": "string"
-                },
-                "token": {
+                "Token": {
                     "type": "string"
                 }
             }

@@ -78,11 +78,12 @@ message ResetRequest {
 message ResetResponse {
     string message = 1;
 }
+
 message UpdateEmailVerificationTokenRequest {
     int32 ID     = 1;
-    string token = 2;
-    string email = 3;
-	string password = 4;
+    string Token = 2;
+    string Email = 3;
+	string Password = 4;
 }
 
 message UpdateEmailVerificationTokenResponse {}
