@@ -3,9 +3,50 @@ package handler
 import (
 	"net/http"
 
+	"github.com/bogach-ivan/nonsense"
 	"github.com/bogach-ivan/wb_assistant_be/pb"
 	"github.com/gin-gonic/gin"
 )
+
+// @Summary update email verification token
+// @Security ApiKeyAuth
+// @Tags account
+// @Description update email verification token
+// @ID update-email-verification-token
+// @Accept json
+// @Produce json
+// @Param input body pb.UpdateEmailVerificationTokenRequest true "account info"
+// @Success 200 {integer} integer 1
+// @Failure 400 {object} errorResponse
+// @Failure default {object} errorResponse
+// @Router /account/update [post]
+func (h *Handler) updateEmailVerificationToken(c *gin.Context) {
+	id, err := getUserID(c)
+	if err != nil {
+		return
+	}
+	token := nonsense.RandSeq(100)
+	input := &pb.UpdateEmailVerificationTokenRequest{ID: id, Token: token}
+
+	_, err = h.authClient.UpdateEmailVerificationToken(c, input)
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	// Send the confirm token to a user email
+	r, err := h.mailClient.Confirm(c, &pb.MailConfirmRequest{Url: "bdrop.net/auth/confirmation/" + token, Email: input.Email, Pass: input.Password})
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	if len(r.Message) > 0 {
+		newErrorResponse(c, http.StatusInternalServerError, r.Message)
+		return
+	}
+
+	c.JSON(http.StatusOK, statusResponse{"ok"})
+}
 
 // @Summary update account
 // @Security ApiKeyAuth

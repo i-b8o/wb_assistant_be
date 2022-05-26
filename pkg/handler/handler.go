@@ -41,6 +41,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	account := router.Group("/account", h.userIdentity)
 	{
 		account.POST("/update", h.update)
+		account.POST("/update-email-verification-token", h.updateEmailVerificationToken)
 		account.GET("/details", h.details)
 	}
 

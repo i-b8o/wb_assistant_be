@@ -147,6 +147,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/handler.errorResponse"
                         }
                     },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/handler.errorResponse"
+                        }
+                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
@@ -261,6 +267,23 @@ const docTemplate = `{
         "pb.GenerateTokenResponse": {
             "type": "object",
             "properties": {
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "pb.UpdateEmailVerificationTokenRequest": {
+            "type": "object",
+            "properties": {
+                "ID": {
+                    "type": "integer"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
                 "token": {
                     "type": "string"
                 }

@@ -12,6 +12,7 @@ service AuthService {
     rpc parseToken(ParseTokenRequest) returns (ParseTokenResponse) {};
     rpc getDetails(GetDetailsRequest) returns (User) {};
     rpc update(UpdateRequest) returns (UpdateResponse) {};
+    rpc updateEmailVerificationToken(UpdateEmailVerificationTokenRequest) returns (UpdateEmailVerificationTokenResponse) {};
 }
 
 service MailService {

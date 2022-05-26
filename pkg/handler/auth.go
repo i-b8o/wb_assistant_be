@@ -81,13 +81,14 @@ func (h *Handler) signIn(c *gin.Context) {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
-
+	// Email validation
 	_, err = mail.ParseAddress(req.Email)
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
+	// Try to get jwt
 	resp, err := h.authClient.GenerateToken(c, req)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())

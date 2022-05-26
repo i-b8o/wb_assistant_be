@@ -14,6 +14,7 @@ type Authorization interface {
 	Update(in *pb.UpdateRequest) (*pb.UpdateResponse, error)
 	InsertEmailConfirmToken(ctx context.Context, in *pb.InsertEmailConfirmTokenRequest) (*pb.InsertEmailConfirmTokenResponse, error)
 	CheckAndDelEmailConfirmToken(ctx context.Context, in *pb.CheckAndDelEmailConfirmTokenRequest) (*pb.CheckAndDelEmailConfirmTokenResponse, error)
+	UpdateEmailConfirmToken(userId int32, token string) (*pb.UpdateEmailVerificationTokenResponse, error)
 }
 
 type Repository struct {

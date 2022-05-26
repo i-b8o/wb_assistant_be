@@ -31,6 +31,17 @@ definitions:
       token:
         type: string
     type: object
+  pb.UpdateEmailVerificationTokenRequest:
+    properties:
+      ID:
+        type: integer
+      email:
+        type: string
+      password:
+        type: string
+      token:
+        type: string
+    type: object
   pb.UpdateRequest:
     properties:
       ID:
@@ -141,6 +152,10 @@ paths:
             $ref: '#/definitions/pb.GenerateTokenResponse'
         "400":
           description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        "404":
+          description: Not Found
           schema:
             $ref: '#/definitions/handler.errorResponse'
         "500":

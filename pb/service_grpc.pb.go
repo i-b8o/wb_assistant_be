@@ -29,6 +29,7 @@ type AuthServiceClient interface {
 	ParseToken(ctx context.Context, in *ParseTokenRequest, opts ...grpc.CallOption) (*ParseTokenResponse, error)
 	GetDetails(ctx context.Context, in *GetDetailsRequest, opts ...grpc.CallOption) (*User, error)
 	Update(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error)
+	UpdateEmailVerificationToken(ctx context.Context, in *UpdateEmailVerificationTokenRequest, opts ...grpc.CallOption) (*UpdateEmailVerificationTokenResponse, error)
 }
 
 type authServiceClient struct {
@@ -102,6 +103,15 @@ func (c *authServiceClient) Update(ctx context.Context, in *UpdateRequest, opts 
 	return out, nil
 }
 
+func (c *authServiceClient) UpdateEmailVerificationToken(ctx context.Context, in *UpdateEmailVerificationTokenRequest, opts ...grpc.CallOption) (*UpdateEmailVerificationTokenResponse, error) {
+	out := new(UpdateEmailVerificationTokenResponse)
+	err := c.cc.Invoke(ctx, "/AuthService/updateEmailVerificationToken", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthServiceServer is the server API for AuthService service.
 // All implementations must embed UnimplementedAuthServiceServer
 // for forward compatibility
@@ -113,6 +123,7 @@ type AuthServiceServer interface {
 	ParseToken(context.Context, *ParseTokenRequest) (*ParseTokenResponse, error)
 	GetDetails(context.Context, *GetDetailsRequest) (*User, error)
 	Update(context.Context, *UpdateRequest) (*UpdateResponse, error)
+	UpdateEmailVerificationToken(context.Context, *UpdateEmailVerificationTokenRequest) (*UpdateEmailVerificationTokenResponse, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -140,6 +151,9 @@ func (UnimplementedAuthServiceServer) GetDetails(context.Context, *GetDetailsReq
 }
 func (UnimplementedAuthServiceServer) Update(context.Context, *UpdateRequest) (*UpdateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
+}
+func (UnimplementedAuthServiceServer) UpdateEmailVerificationToken(context.Context, *UpdateEmailVerificationTokenRequest) (*UpdateEmailVerificationTokenResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateEmailVerificationToken not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
 
@@ -280,6 +294,24 @@ func _AuthService_Update_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_UpdateEmailVerificationToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateEmailVerificationTokenRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).UpdateEmailVerificationToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/AuthService/updateEmailVerificationToken",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).UpdateEmailVerificationToken(ctx, req.(*UpdateEmailVerificationTokenRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthService_ServiceDesc is the grpc.ServiceDesc for AuthService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -314,6 +346,10 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "update",
 			Handler:    _AuthService_Update_Handler,
+		},
+		{
+			MethodName: "updateEmailVerificationToken",
+			Handler:    _AuthService_UpdateEmailVerificationToken_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

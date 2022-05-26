@@ -1,6 +1,4 @@
 make all --print-data-base --no-builtin-variables --no-builtin-rules --question
-make: *** No rule to make target 'all'.  Stop.
-
 # GNU Make 4.2.1
 # Built for x86_64-pc-linux-gnu
 # Copyright (C) 1988-2016 Free Software Foundation, Inc.
@@ -8,7 +6,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Mon May 23 10:33:53 2022
+# Make data base, printed on Thu May 26 14:36:13 2022
 
 # Variables
 
@@ -18,6 +16,8 @@ GNUMAKEFLAGS :=
 <D = $(patsubst %/,%,$(dir $<))
 # automatic
 ?F = $(notdir $?)
+# environment
+AUTH_IP = 188.93.210.165
 # environment
 DESKTOP_SESSION = ubuntu
 # default
@@ -30,6 +30,8 @@ XDG_SESSION_TYPE = x11
 VSCODE_LOG_NATIVE = false
 # automatic
 ?D = $(patsubst %/,%,$(dir $?))
+# environment
+IM_CONFIG_PHASE = 1
 # automatic
 @D = $(patsubst %/,%,$(dir $@))
 # environment
@@ -39,25 +41,25 @@ GDMSESSION = ubuntu
 # environment
 XMODIFIERS = @im=ibus
 # makefile
-CURDIR := /home/kvo/go/src/github.com/bogach-ivan/wb_assistant_be
+CURDIR := /home/kvo/go/src/github.com/i-b8o/wb_assistant_be
 # makefile
 SHELL = /bin/sh
 # environment
 VSCODE_NLS_CONFIG = {"locale":"en-us","availableLanguages":{},"_languagePackSupport":true}
 # environment
-_ = /usr/bin/dbus-update-activation-environment
+_ = /usr/share/code/code
 # environment
-JOURNAL_STREAM = 8:41558
+JOURNAL_STREAM = 8:42391
 # environment
 XDG_CONFIG_DIRS = /etc/xdg/xdg-ubuntu:/etc/xdg
-# makefile (from '/home/kvo/go/src/github.com/bogach-ivan/wb_assistant_be/.env', line 1)
-SEND_MAIL_IP = 188.93.210.165
-# makefile (from '/home/kvo/go/src/github.com/bogach-ivan/wb_assistant_be/.env', line 1)
-MAKEFILE_LIST :=  Makefile /home/kvo/go/src/github.com/bogach-ivan/wb_assistant_be/.env
+# makefile (from 'Makefile', line 1)
+MAKEFILE_LIST :=  Makefile
+# environment
+JAVA_HOME = /home/kvo/Downloads/android-studio/jre
 # automatic
 @F = $(notdir $@)
 # environment
-IM_CONFIG_PHASE = 1
+GIO_LAUNCHED_DESKTOP_FILE = /usr/share/applications/code.desktop
 # environment
 USERNAME = kvo
 # environment
@@ -71,9 +73,9 @@ DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/1000/bus
 # environment
 VSCODE_VERBOSE_LOGGING = true
 # environment
-MANAGERPID = 1406
+MANAGERPID = 1390
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-6e084c7c-ac77-4104-9b0a-c46eebb3b4f1.sock
+LESSOPEN = | /usr/bin/lesspipe %s
 # environment
 LC_NAME = ru_RU.UTF-8
 # environment
@@ -83,13 +85,19 @@ GOPROXY = https://proxy.golang.org,direct
 # default
 MAKE_HOST := x86_64-pc-linux-gnu
 # environment
-PATH = /usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+PATH = /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/local/go/bin:/home/kvo/go/bin
+# environment
+AUTH_SERVICE_DB_HOST = localhost
 # environment
 GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
 # environment
-SESSION_MANAGER = local/kvo-System-Product-Name:@/tmp/.ICE-unix/1620,unix/kvo-System-Product-Name:/tmp/.ICE-unix/1620
+GJS_DEBUG_OUTPUT = stderr
+# environment
+SESSION_MANAGER = local/kvo-System-Product-Name:@/tmp/.ICE-unix/1601,unix/kvo-System-Product-Name:/tmp/.ICE-unix/1601
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
+# environment
+MAIL_IP = 188.93.210.165
 # environment
 GOPATH = /home/kvo/go
 # environment
@@ -99,27 +107,31 @@ VSCODE_LOG_STACK = false
 # environment
 ELECTRON_RUN_AS_NODE = 1
 # environment
-INVOCATION_ID = 9825b3fd6c2b4d3ab36eea0daae98032
+INVOCATION_ID = 6f2401fd65c04863816473eea545e9c5
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
+# environment
+LS_COLORS = 
 # environment
 XDG_SESSION_DESKTOP = ubuntu
 # environment
 SSH_AUTH_SOCK = /run/user/1000/keyring/ssh
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 3144
+GIO_LAUNCHED_DESKTOP_FILE_PID = 10160
 # automatic
 %F = $(notdir $%)
 # environment
 DISPLAY = :0
 # environment
+AUTH_SERVICE_IP = 
+# environment
 VSCODE_PIPE_LOGGING = true
 # environment
-PWD = /home/kvo/go/src/github.com/bogach-ivan/wb_assistant_be
+PWD = /home/kvo/go/src/github.com/i-b8o/wb_assistant_be
 # default
 .LOADED := 
 # environment
-SSH_AGENT_PID = 1583
+SSH_AGENT_PID = 1564
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = ubuntu:GNOME
 # environment
@@ -129,17 +141,19 @@ GOMODCACHE = /home/kvo/go/pkg/mod
 # environment
 HOME = /home/kvo
 # environment
-VSCODE_CLI = 1
+LESSCLOSE = /usr/bin/lesspipe %s %s
 # environment
 VSCODE_CODE_CACHE_PATH = /home/kvo/.config/Code/CachedData/c3511e6c69bb39013c4a4b7b9566ec1ca73fc4d5
 # environment
 LOGNAME = kvo
 # environment
-APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
 # automatic
 +F = $(notdir $+)
 # environment
-ELECTRON_NO_ATTACH_CONSOLE = 1
+AUTH_SERVICE_PORT = 9999
+# environment
+API_SERVICE_PORT = 8080
 # environment
 VSCODE_HANDLES_UNCAUGHT_ERRORS = true
 # environment
@@ -158,6 +172,8 @@ QT_IM_MODULE = ibus
 SHLVL = 0
 # environment
 GNOME_SHELL_SESSION_MODE = ubuntu
+# environment
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-ee014d32-61d5-458b-aa2b-29c5ffa80928.sock
 # default
 MAKE_VERSION := 4.2.1
 # environment
@@ -168,6 +184,8 @@ LC_MONETARY = ru_RU.UTF-8
 .DEFAULT_GOAL := gen
 # environment
 XDG_CURRENT_DESKTOP = Unity
+# environment
+AUTH_SERVICE_DB_USERNAME = wb_user
 # automatic
 %D = $(patsubst %/,%,$(dir $%))
 # environment
@@ -179,9 +197,11 @@ MAKE_COMMAND := make
 # automatic
 *F = $(notdir $*)
 # environment
+MAIL_SERVICE_IP = 188.93.210.165
+# environment
 VSCODE_IPC_HOOK = /run/user/1000/vscode-c2f3becb-1.67.2-main.sock
-# makefile (from '/home/kvo/go/src/github.com/bogach-ivan/wb_assistant_be/.env', line 2)
-DB_PASSWORD = 031501
+# environment
+API_IP = 188.93.210.165
 # makefile
 MAKEFLAGS = pqrR
 # environment
@@ -199,6 +219,8 @@ QT_ACCESSIBILITY = 1
 # default
 MAKEFILES := 
 # environment
+MAIL_SERVICE_PORT = 1982
+# environment
 LC_NUMERIC = ru_RU.UTF-8
 # automatic
 <F = $(notdir $<)
@@ -206,6 +228,10 @@ LC_NUMERIC = ru_RU.UTF-8
 LC_MEASUREMENT = ru_RU.UTF-8
 # environment
 LC_ALL = C
+# environment
+AUTH_SERVICE_DB_DBNAME = wb
+# environment
+GJS_DEBUG_TOPICS = JS ERROR;JS LOG
 # automatic
 ^F = $(notdir $^)
 # default
@@ -218,18 +244,18 @@ WINDOWPATH = 2
 .INCLUDE_DIRS = /usr/include /usr/local/include /usr/include
 # environment
 LC_IDENTIFICATION = ru_RU.UTF-8
+# environment
+AUTH_SERVICE_DB_PASSWORD = 031501
 # default
 .RECIPEPREFIX := 
 # environment
 LC_ADDRESS = ru_RU.UTF-8
-# makefile (from 'Makefile', line 1)
-ENV := /home/kvo/go/src/github.com/bogach-ivan/wb_assistant_be/.env
 # environment
 LANG = C
 # environment
-VSCODE_PID = 3163
+VSCODE_PID = 10160
 # variable set hash-table stats:
-# Load=108/1024=11%, Rehash=0, Collisions=18/137=13%
+# Load=122/1024=12%, Rehash=0, Collisions=21/147=14%
 
 # Pattern-specific Variable Values
 
@@ -237,9 +263,9 @@ VSCODE_PID = 3163
 
 # Directories
 
-# . (device 2053, inode 6557564): 21 files, no impossibilities.
+# . (device 2053, inode 6703798): 19 files, no impossibilities.
 
-# 21 files, no impossibilities in 1 directories.
+# 19 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -253,12 +279,24 @@ all:
 #  Implicit rule search has been done.
 #  File does not exist.
 #  File has not been updated.
+ 
+make: *** No rule to make target 'all'.  Stop.
+
+
+api:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 26):
+	GOOS=linux GOARCH=amd64 go build -o api_service -v cmd/*
+	scp api_service root@$(API_IP):/bin/api_service
+	rm api_service
 
 git:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 11):
+#  recipe to execute (from 'Makefile', line 7):
 	git add .
 	git commit -a -m "$m"
 	git push -u origin main
@@ -266,7 +304,7 @@ git:
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-05-23 08:59:52.58367233
+#  Last modified 2022-05-26 07:45:04.661542335
 #  File has been updated.
 #  Successfully updated.
 
@@ -274,57 +312,56 @@ gen:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 6):
+#  recipe to execute (from 'Makefile', line 2):
 	protoc -I=proto/ --go_out=pb/ proto/*.proto
 	protoc --go-grpc_out=pb/ proto/*.proto -I=proto/
 	# protoc --dart_out=grpc:fe/welcome/packages/grpc_repository/lib/src/proto/ -Iproto proto/*.proto
 
 # Not a target:
 .DEFAULT:
- 
 #  Implicit rule search has not been done.
- 
 #  Modification time never checked.
 #  File has not been updated.
-
-# Not a target:
-/home/kvo/go/src/github.com/bogach-ivan/wb_assistant_be/.env:
-#  Implicit rule search has been done.
- 
-#  Last modified 2022-05-23 09:57:04.560518922
-#  File has been updated.
-#  Successfully updated.
 
 mail:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 20):
+#  recipe to execute (from 'Makefile', line 16):
 	GOOS=linux GOARCH=amd64 go build -o mail_service -v services/mail/server/*
-	scp mail_service root@$(SEND_MAIL_IP):/bin/mail_service
+	scp mail_service root@$(MAIL_IP):/bin/mail_service
 	rm mail_service
 
 swag:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 17):
+#  recipe to execute (from 'Makefile', line 13):
 	swag init -g cmd/main.go
 
+auth:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 21):
+	GOOS=linux GOARCH=amd64 go build -o auth_service -v services/auth/server/*
+	scp auth_service root@$(AUTH_IP):/bin/auth_service
+	rm auth_service
+
 # files hash-table stats:
-# Load=9/1024=1%, Rehash=0, Collisions=0/20=0%
+# Load=10/1024=1%, Rehash=0, Collisions=0/20=0%
 # VPATH Search Paths
 
 # No 'vpath' search paths.
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 31 / storage = 278 B / avg = 8 B
-# current buf: size = 8162 B / used = 278 B / count = 31 / avg = 8 B
+# strcache buffers: 1 (0) / strings = 30 / storage = 213 B / avg = 7 B
+# current buf: size = 8162 B / used = 213 B / count = 30 / avg = 7 B
 
-# strcache performance: lookups = 40 / hit rate = 22%
+# strcache performance: lookups = 40 / hit rate = 25%
 # hash-table stats:
-# Load=31/8192=0%, Rehash=0, Collisions=1/40=2%
-# Finished Make data base on Mon May 23 10:33:53 2022
+# Load=30/8192=0%, Rehash=0, Collisions=1/40=2%
+# Finished Make data base on Thu May 26 14:36:13 2022
 
  

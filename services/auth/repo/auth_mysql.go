@@ -141,3 +141,14 @@ func (r *AuthMySQL) CheckAndDelEmailConfirmToken(ctx context.Context, in *pb.Che
 	}
 	return &pb.CheckAndDelEmailConfirmTokenResponse{}, nil
 }
+
+func (r *AuthMySQL) UpdateEmailConfirmToken(userId int32, token string) (*pb.UpdateEmailVerificationTokenResponse, error) {
+	resp := &pb.UpdateEmailVerificationTokenResponse{}
+	// Update
+	query := fmt.Sprintf("UPDATE %s SET token=? WHERE user_id=?", verifiedsTable)
+
+	if _, err := r.db.Exec(query, token, userId); err != nil {
+		return nil, err
+	}
+	return resp, nil
+}

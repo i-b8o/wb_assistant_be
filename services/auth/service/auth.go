@@ -107,6 +107,10 @@ func (s *AuthService) InsertEmailConfirmToken(ctx context.Context, in *pb.Insert
 	return s.repo.InsertEmailConfirmToken(ctx, in)
 }
 
+func (s *AuthService) UpdateEmailVerificationToken(ctx context.Context, in *pb.UpdateEmailVerificationTokenRequest) (*pb.UpdateEmailVerificationTokenResponse, error) {
+	return s.repo.UpdateEmailConfirmToken(in.ID, in.Token)
+}
+
 func (s *AuthService) CheckAndDelEmailConfirmToken(ctx context.Context, in *pb.CheckAndDelEmailConfirmTokenRequest) (*pb.CheckAndDelEmailConfirmTokenResponse, error) {
 	return s.repo.CheckAndDelEmailConfirmToken(ctx, in)
 }
