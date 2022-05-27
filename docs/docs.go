@@ -258,6 +258,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/handler.errorResponse"
                         }
                     },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/handler.errorResponse"
+                        }
+                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {

@@ -18,6 +18,7 @@ import (
 // @Param input body pb.CreateUserRequest true "account info"
 // @Success 200 {object} pb.CreateUserResponse 1
 // @Failure 400 {object} errorResponse
+// @Failure 409 {object} errorResponse
 // @Failure 500 {object} errorResponse
 // @Failure default {object} errorResponse
 // @Router /auth/sign-up [post]
@@ -39,6 +40,9 @@ func (h *Handler) signUp(c *gin.Context) {
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
+	}
+	if resp.ID == 0 {
+		newErrorResponse(c, http.StatusConflict, "")
 	}
 
 	// Add confirm token to db
