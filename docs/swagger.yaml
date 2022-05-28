@@ -31,6 +31,11 @@ definitions:
       token:
         type: string
     type: object
+  pb.RecoverPasswordRequest:
+    properties:
+      Email:
+        type: string
+    type: object
   pb.UpdateEmailVerificationTokenRequest:
     properties:
       Email:
@@ -163,6 +168,41 @@ paths:
       summary: update email verification token
       tags:
       - account
+  /auth/recover:
+    post:
+      consumes:
+      - application/json
+      description: recover password
+      operationId: recover
+      parameters:
+      - description: account info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/pb.RecoverPasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      summary: Password recover
+      tags:
+      - recover
   /auth/sign-in:
     post:
       consumes:

@@ -72,8 +72,8 @@ message MailConfirmResponse {
     string message = 1;
 }
 message ResetRequest {
-	string url = 1;
-	string email = 2;
+	string email = 1;
+	string password = 2;
 }
 message ResetResponse {
     string message = 1;
@@ -87,3 +87,9 @@ message UpdateEmailVerificationTokenRequest {
 }
 
 message UpdateEmailVerificationTokenResponse {}
+
+message RecoverPasswordRequest {
+    string Email = 1;
+    string Password = 2;
+}
+message RecoverPasswordResponse {}

@@ -105,6 +105,55 @@ func (h *Handler) signIn(c *gin.Context) {
 	c.JSON(http.StatusOK, map[string]interface{}{"token": resp.Token})
 }
 
+// @Summary Password recover
+// @Tags recover
+// @Description recover password
+// @ID recover
+// @Accept json
+// @Produce json
+// @Param input body pb.RecoverPasswordRequest true "account info"
+// @Success 200 {object} integer 1
+// @Failure 400 {object} errorResponse
+// @Failure 404 {object} errorResponse
+// @Failure default {object} errorResponse
+// @Router /auth/recover [post]
+func (h *Handler) passwordRecover(c *gin.Context) {
+	req := &pb.RecoverPasswordRequest{}
+	err := c.BindJSON(&req)
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+	// Email validation
+	_, err = mail.ParseAddress(req.Email)
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	// Generete new password
+	pass := nonsense.RandSeq(7)
+	req.Password = pass
+	_, err = h.authClient.RecoverPassword(c, req)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	// Send the password to the user email
+	r, err := h.mailClient.Reset(c, &pb.ResetRequest{Email: req.Email, Password: req.Password})
+	if err != nil {
+		c.Writer.WriteHeader(http.StatusNotFound)
+		return
+	}
+	if len(r.Message) > 0 {
+		c.Writer.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	c.Writer.WriteHeader(200)
+}
+
 func (h *Handler) confirmation(c *gin.Context) {
 
 	token := c.Param("token")
@@ -124,9 +173,5 @@ func (h *Handler) resend(c *gin.Context) {
 }
 
 func (h *Handler) set(c *gin.Context) {
-
-}
-
-func (h *Handler) passwordReset(c *gin.Context) {
 
 }

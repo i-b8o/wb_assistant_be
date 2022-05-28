@@ -152,3 +152,12 @@ func (r *AuthMySQL) UpdateEmailConfirmToken(userId int32, token string) (*pb.Upd
 	}
 	return resp, nil
 }
+
+func (r *AuthMySQL) RecoverPassword(email, password string) error {
+	query := fmt.Sprintf("UPDATE %s SET password=? WHERE email=?", usersTable)
+
+	if _, err := r.db.Exec(query, password, email); err != nil {
+		return err
+	}
+	return nil
+}

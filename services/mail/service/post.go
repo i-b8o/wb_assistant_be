@@ -56,11 +56,11 @@ func (post *PostFix) Confirm(url, email, pass string) *pb.MailConfirmResponse {
 	return resp
 }
 
-func (post *PostFix) Reset(url, email string) *pb.ResetResponse {
+func (post *PostFix) Reset(email, password string) *pb.ResetResponse {
 	post.mutex.Lock()
 	defer post.mutex.Unlock()
 
-	body := `"<p>Мы получили запрос на восстановление доступа к Вашему аккаунту.</p><p>Если этот запрос сделан Вами, пожалуйста, откройте ссылку для установки нового пароля:</p><a href='` + url + `'>` + url + `</a>"`
+	body := `"<p>Мы получили запрос на восстановление доступа к Вашему аккаунту.</p><p>Ваш пароль: <b>` + password + `</b></p>"`
 	subj := `"$(echo -e "Восстановление доступа к Вашему аккаунту\nFrom: www.bdrop.net <noreply@bdrop.net>\nContent-Type: text/html")"`
 	err := call(`echo ` + body + ` | mail -s ` + subj + ` ` + email + ``)
 	if err != nil {

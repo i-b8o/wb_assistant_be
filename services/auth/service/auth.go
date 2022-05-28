@@ -52,6 +52,7 @@ func generatePasswordHash(password string) string {
 
 	return fmt.Sprintf("%x", hash.Sum([]byte(salt)))
 }
+
 func (s *AuthService) GenerateToken(ctx context.Context, in *pb.GenerateTokenRequest) (*pb.GenerateTokenResponse, error) {
 	id := s.repo.GetUserID(in.Email, generatePasswordHash(in.Password))
 	if id == 0 {
@@ -113,4 +114,15 @@ func (s *AuthService) UpdateEmailVerificationToken(ctx context.Context, in *pb.U
 
 func (s *AuthService) CheckAndDelEmailConfirmToken(ctx context.Context, in *pb.CheckAndDelEmailConfirmTokenRequest) (*pb.CheckAndDelEmailConfirmTokenResponse, error) {
 	return s.repo.CheckAndDelEmailConfirmToken(ctx, in)
+}
+
+func (s *AuthService) RecoverPassword(ctx context.Context, in *pb.RecoverPasswordRequest) (*pb.RecoverPasswordResponse, error) {
+	password := generatePasswordHash(in.Password)
+
+	err := s.repo.RecoverPassword(in.Email, password)
+	if err != nil {
+		return &pb.RecoverPasswordResponse{}, err
+	}
+
+	return &pb.RecoverPasswordResponse{}, nil
 }

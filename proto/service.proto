@@ -13,6 +13,7 @@ service AuthService {
     rpc getDetails(GetDetailsRequest) returns (User) {};
     rpc update(UpdateRequest) returns (UpdateResponse) {};
     rpc updateEmailVerificationToken(UpdateEmailVerificationTokenRequest) returns (UpdateEmailVerificationTokenResponse) {};
+    rpc recoverPassword(RecoverPasswordRequest) returns (RecoverPasswordResponse) {};
 }
 
 service MailService {

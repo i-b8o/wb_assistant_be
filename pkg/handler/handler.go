@@ -35,7 +35,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		auth.GET("/confirmation/:token", h.confirmation)
 		auth.POST("/resend", h.resend)
 		auth.POST("/set", h.set)
-		auth.POST("/password-reset", h.passwordReset)
+		auth.POST("/recover", h.passwordRecover)
 	}
 
 	account := router.Group("/account", h.userIdentity)

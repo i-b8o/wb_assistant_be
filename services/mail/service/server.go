@@ -51,6 +51,6 @@ func (server *Server) Reset(ctx context.Context, req *pb.ResetRequest) (*pb.Rese
 		logrus.Print("deadline is exceed")
 		return nil, status.Error(codes.DeadlineExceeded, "deadline is exceeded")
 	}
-	resp := server.post.Reset(req.Url, req.Email)
+	resp := server.post.Reset(req.Email, req.Password)
 	return resp, nil
 }

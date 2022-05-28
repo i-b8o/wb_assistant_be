@@ -30,6 +30,7 @@ type AuthServiceClient interface {
 	GetDetails(ctx context.Context, in *GetDetailsRequest, opts ...grpc.CallOption) (*User, error)
 	Update(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error)
 	UpdateEmailVerificationToken(ctx context.Context, in *UpdateEmailVerificationTokenRequest, opts ...grpc.CallOption) (*UpdateEmailVerificationTokenResponse, error)
+	RecoverPassword(ctx context.Context, in *RecoverPasswordRequest, opts ...grpc.CallOption) (*RecoverPasswordResponse, error)
 }
 
 type authServiceClient struct {
@@ -112,6 +113,15 @@ func (c *authServiceClient) UpdateEmailVerificationToken(ctx context.Context, in
 	return out, nil
 }
 
+func (c *authServiceClient) RecoverPassword(ctx context.Context, in *RecoverPasswordRequest, opts ...grpc.CallOption) (*RecoverPasswordResponse, error) {
+	out := new(RecoverPasswordResponse)
+	err := c.cc.Invoke(ctx, "/AuthService/recoverPassword", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthServiceServer is the server API for AuthService service.
 // All implementations must embed UnimplementedAuthServiceServer
 // for forward compatibility
@@ -124,6 +134,7 @@ type AuthServiceServer interface {
 	GetDetails(context.Context, *GetDetailsRequest) (*User, error)
 	Update(context.Context, *UpdateRequest) (*UpdateResponse, error)
 	UpdateEmailVerificationToken(context.Context, *UpdateEmailVerificationTokenRequest) (*UpdateEmailVerificationTokenResponse, error)
+	RecoverPassword(context.Context, *RecoverPasswordRequest) (*RecoverPasswordResponse, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -154,6 +165,9 @@ func (UnimplementedAuthServiceServer) Update(context.Context, *UpdateRequest) (*
 }
 func (UnimplementedAuthServiceServer) UpdateEmailVerificationToken(context.Context, *UpdateEmailVerificationTokenRequest) (*UpdateEmailVerificationTokenResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateEmailVerificationToken not implemented")
+}
+func (UnimplementedAuthServiceServer) RecoverPassword(context.Context, *RecoverPasswordRequest) (*RecoverPasswordResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RecoverPassword not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
 
@@ -312,6 +326,24 @@ func _AuthService_UpdateEmailVerificationToken_Handler(srv interface{}, ctx cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_RecoverPassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RecoverPasswordRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).RecoverPassword(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/AuthService/recoverPassword",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).RecoverPassword(ctx, req.(*RecoverPasswordRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthService_ServiceDesc is the grpc.ServiceDesc for AuthService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -350,6 +382,10 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "updateEmailVerificationToken",
 			Handler:    _AuthService_UpdateEmailVerificationToken_Handler,
+		},
+		{
+			MethodName: "recoverPassword",
+			Handler:    _AuthService_RecoverPassword_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
