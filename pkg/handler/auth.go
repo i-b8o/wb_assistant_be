@@ -165,7 +165,8 @@ func (h *Handler) confirmation(c *gin.Context) {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
-	c.JSON(http.StatusOK, map[string]interface{}{"token": "ok"})
+	c.Redirect(http.StatusFound, "https://www.google.com/")
+	c.Abort()
 }
 
 func (h *Handler) resend(c *gin.Context) {
