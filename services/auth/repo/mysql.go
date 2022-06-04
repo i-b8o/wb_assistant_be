@@ -13,6 +13,7 @@ const (
 	verifiedsTable        = "verifieds"
 	verifiedPasswordTable = "verifieds"
 	resetPasswordTable    = "resets"
+	actionsTable          = "actions"
 )
 
 type Config struct {

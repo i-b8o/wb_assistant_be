@@ -31,6 +31,7 @@ type AuthServiceClient interface {
 	Update(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error)
 	UpdateEmailVerificationToken(ctx context.Context, in *UpdateEmailVerificationTokenRequest, opts ...grpc.CallOption) (*UpdateEmailVerificationTokenResponse, error)
 	RecoverPassword(ctx context.Context, in *RecoverPasswordRequest, opts ...grpc.CallOption) (*RecoverPasswordResponse, error)
+	Actions(ctx context.Context, in *ActionsRequest, opts ...grpc.CallOption) (*ActionsResponse, error)
 }
 
 type authServiceClient struct {
@@ -122,6 +123,15 @@ func (c *authServiceClient) RecoverPassword(ctx context.Context, in *RecoverPass
 	return out, nil
 }
 
+func (c *authServiceClient) Actions(ctx context.Context, in *ActionsRequest, opts ...grpc.CallOption) (*ActionsResponse, error) {
+	out := new(ActionsResponse)
+	err := c.cc.Invoke(ctx, "/AuthService/actions", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthServiceServer is the server API for AuthService service.
 // All implementations must embed UnimplementedAuthServiceServer
 // for forward compatibility
@@ -135,6 +145,7 @@ type AuthServiceServer interface {
 	Update(context.Context, *UpdateRequest) (*UpdateResponse, error)
 	UpdateEmailVerificationToken(context.Context, *UpdateEmailVerificationTokenRequest) (*UpdateEmailVerificationTokenResponse, error)
 	RecoverPassword(context.Context, *RecoverPasswordRequest) (*RecoverPasswordResponse, error)
+	Actions(context.Context, *ActionsRequest) (*ActionsResponse, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -168,6 +179,9 @@ func (UnimplementedAuthServiceServer) UpdateEmailVerificationToken(context.Conte
 }
 func (UnimplementedAuthServiceServer) RecoverPassword(context.Context, *RecoverPasswordRequest) (*RecoverPasswordResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RecoverPassword not implemented")
+}
+func (UnimplementedAuthServiceServer) Actions(context.Context, *ActionsRequest) (*ActionsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Actions not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
 
@@ -344,6 +358,24 @@ func _AuthService_RecoverPassword_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_Actions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ActionsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).Actions(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/AuthService/actions",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).Actions(ctx, req.(*ActionsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthService_ServiceDesc is the grpc.ServiceDesc for AuthService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -386,6 +418,10 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "recoverPassword",
 			Handler:    _AuthService_RecoverPassword_Handler,
+		},
+		{
+			MethodName: "actions",
+			Handler:    _AuthService_Actions_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

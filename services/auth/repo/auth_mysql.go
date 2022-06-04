@@ -142,12 +142,18 @@ func (r *AuthMySQL) CheckAndDelEmailConfirmToken(ctx context.Context, in *pb.Che
 	return &pb.CheckAndDelEmailConfirmTokenResponse{}, nil
 }
 
-func (r *AuthMySQL) UpdateEmailConfirmToken(userId int32, token string) (*pb.UpdateEmailVerificationTokenResponse, error) {
+func (r *AuthMySQL) UpdateEmailConfirmToken(email, token, password string) (*pb.UpdateEmailVerificationTokenResponse, error) {
+	var id int32
+	query := fmt.Sprintf("SELECT id FROM %s WHERE email=? AND password=?", usersTable)
+	err := r.db.QueryRow(query, email, password).Scan(&id)
+	if err != nil {
+		return &pb.UpdateEmailVerificationTokenResponse{}, err
+	}
 	resp := &pb.UpdateEmailVerificationTokenResponse{}
 	// Update
-	query := fmt.Sprintf("UPDATE %s SET token=? WHERE user_id=?", verifiedsTable)
+	query = fmt.Sprintf("UPDATE %s SET token=? WHERE user_id=?", verifiedsTable)
 
-	if _, err := r.db.Exec(query, token, userId); err != nil {
+	if _, err := r.db.Exec(query, token, id); err != nil {
 		return nil, err
 	}
 	return resp, nil
@@ -160,4 +166,26 @@ func (r *AuthMySQL) RecoverPassword(email, password string) error {
 		return err
 	}
 	return nil
+}
+
+func (r *AuthMySQL) Actions(ctx context.Context, id int32, action string) (string, error) {
+
+	query := fmt.Sprintf("INSERT INTO %s (users_id, action) values (?, ?)", actionsTable)
+	stmt, err := r.db.PrepareContext(ctx, query)
+	if err != nil {
+		return "", err
+	}
+	defer stmt.Close()
+
+	_, err = stmt.ExecContext(ctx, id, action)
+	if err != nil {
+		return "", err
+	}
+	var t string
+	query = fmt.Sprintf("SELECT type FROM %s WHERE id=?", usersTable)
+	err = r.db.QueryRow(query, id).Scan(&t)
+	if err != nil {
+		return "", err
+	}
+	return t, nil
 }

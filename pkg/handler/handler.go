@@ -43,6 +43,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	{
 		account.POST("/update", h.update)
 		account.GET("/details", h.details)
+		account.POST("/actions", h.actions)
 	}
 
 	return router

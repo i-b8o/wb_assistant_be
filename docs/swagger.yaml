@@ -5,6 +5,13 @@ definitions:
       message:
         type: string
     type: object
+  pb.ActionsRequest:
+    properties:
+      ID:
+        type: integer
+      action:
+        type: string
+    type: object
   pb.CreateUserRequest:
     properties:
       Email:
@@ -42,8 +49,6 @@ definitions:
     properties:
       Email:
         type: string
-      ID:
-        type: integer
       Password:
         type: string
       Token:
@@ -78,6 +83,39 @@ info:
   title: WB Assistant API
   version: "1.0"
 paths:
+  /account/actions:
+    post:
+      consumes:
+      - application/json
+      description: update actions
+      operationId: update-actions
+      parameters:
+      - description: action info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/pb.ActionsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: update actions
+      tags:
+      - account
   /account/details:
     get:
       consumes:

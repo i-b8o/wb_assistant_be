@@ -16,6 +16,58 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/account/actions": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "update actions",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "account"
+                ],
+                "summary": "update actions",
+                "operationId": "update-actions",
+                "parameters": [
+                    {
+                        "description": "action info",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/pb.ActionsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/handler.errorResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/handler.errorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/account/details": {
             "get": {
                 "security": [
@@ -337,6 +389,17 @@ const docTemplate = `{
                 }
             }
         },
+        "pb.ActionsRequest": {
+            "type": "object",
+            "properties": {
+                "ID": {
+                    "type": "integer"
+                },
+                "action": {
+                    "type": "string"
+                }
+            }
+        },
         "pb.CreateUserRequest": {
             "type": "object",
             "properties": {
@@ -394,9 +457,6 @@ const docTemplate = `{
             "properties": {
                 "Email": {
                     "type": "string"
-                },
-                "ID": {
-                    "type": "integer"
                 },
                 "Password": {
                     "type": "string"

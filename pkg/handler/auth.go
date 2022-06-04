@@ -102,6 +102,7 @@ func (h *Handler) signIn(c *gin.Context) {
 		c.Writer.WriteHeader(http.StatusNotFound)
 		return
 	}
+
 	c.JSON(http.StatusOK, map[string]interface{}{"token": resp.Token})
 }
 
@@ -181,22 +182,17 @@ func (h *Handler) confirmation(c *gin.Context) {
 // @Failure default {object} errorResponse
 // @Router /auth/update-email-verification-token [post]
 func (h *Handler) updateEmailVerificationToken(c *gin.Context) {
-	id, err := getUserID(c)
-	if err != nil {
-		return
-	}
 
 	input := &pb.UpdateEmailVerificationTokenRequest{}
-	if err = c.BindJSON(&input); err != nil {
+	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	token := nonsense.RandSeq(100)
 	input.Token = token
-	input.ID = id
 
-	_, err = h.authClient.UpdateEmailVerificationToken(c, input)
+	_, err := h.authClient.UpdateEmailVerificationToken(c, input)
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return

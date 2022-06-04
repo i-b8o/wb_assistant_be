@@ -80,10 +80,9 @@ message ResetResponse {
 }
 
 message UpdateEmailVerificationTokenRequest {
-    int32 ID     = 1;
-    string Token = 2;
-    string Email = 3;
-	string Password = 4;
+    string Token = 1;
+    string Email = 2;
+	string Password = 3;
 }
 
 message UpdateEmailVerificationTokenResponse {}
@@ -93,3 +92,11 @@ message RecoverPasswordRequest {
     string Password = 2;
 }
 message RecoverPasswordResponse {}
+
+message ActionsRequest {
+    int32 ID = 1;
+    string action = 2;
+}
+message ActionsResponse {
+    string type = 1; 
+}

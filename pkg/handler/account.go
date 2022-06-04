@@ -68,3 +68,37 @@ func (h *Handler) details(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, user)
 }
+
+// @Summary update actions
+// @Security ApiKeyAuth
+// @Tags account
+// @Description update actions
+// @ID update-actions
+// @Accept json
+// @Produce json
+// @Param input body pb.ActionsRequest true "action info"
+// @Success 200 {integer} integer 1
+// @Failure 400 {object} errorResponse
+// @Failure default {object} errorResponse
+// @Router /account/actions [post]
+func (h *Handler) actions(c *gin.Context) {
+	id, err := getUserID(c)
+	if err != nil {
+		return
+	}
+
+	input := &pb.ActionsRequest{}
+	if err = c.BindJSON(&input); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	input.ID = id
+	resp, err := h.authClient.Actions(c, input)
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, statusResponse{resp.Type})
+}

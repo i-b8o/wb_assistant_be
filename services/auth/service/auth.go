@@ -109,7 +109,8 @@ func (s *AuthService) InsertEmailConfirmToken(ctx context.Context, in *pb.Insert
 }
 
 func (s *AuthService) UpdateEmailVerificationToken(ctx context.Context, in *pb.UpdateEmailVerificationTokenRequest) (*pb.UpdateEmailVerificationTokenResponse, error) {
-	return s.repo.UpdateEmailConfirmToken(in.ID, in.Token)
+	password := generatePasswordHash(in.Password)
+	return s.repo.UpdateEmailConfirmToken(in.Email, in.Token, password)
 }
 
 func (s *AuthService) CheckAndDelEmailConfirmToken(ctx context.Context, in *pb.CheckAndDelEmailConfirmTokenRequest) (*pb.CheckAndDelEmailConfirmTokenResponse, error) {
@@ -125,4 +126,12 @@ func (s *AuthService) RecoverPassword(ctx context.Context, in *pb.RecoverPasswor
 	}
 
 	return &pb.RecoverPasswordResponse{}, nil
+}
+
+func (s *AuthService) Actions(ctx context.Context, in *pb.ActionsRequest) (*pb.ActionsResponse, error) {
+	t, err := s.repo.Actions(ctx, in.ID, in.Action)
+	if err != nil {
+		return &pb.ActionsResponse{}, err
+	}
+	return &pb.ActionsResponse{Type: t}, nil
 }
