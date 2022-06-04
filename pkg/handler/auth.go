@@ -169,6 +169,52 @@ func (h *Handler) confirmation(c *gin.Context) {
 	c.Abort()
 }
 
+// @Summary update email verification token
+// @Tags auth
+// @Description update email verification token
+// @ID update-email-verification-token
+// @Accept json
+// @Produce json
+// @Param input body pb.UpdateEmailVerificationTokenRequest true "auth info"
+// @Success 200 {integer} integer 1
+// @Failure 400 {object} errorResponse
+// @Failure default {object} errorResponse
+// @Router /auth/update-email-verification-token [post]
+func (h *Handler) updateEmailVerificationToken(c *gin.Context) {
+	id, err := getUserID(c)
+	if err != nil {
+		return
+	}
+
+	input := &pb.UpdateEmailVerificationTokenRequest{}
+	if err = c.BindJSON(&input); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	token := nonsense.RandSeq(100)
+	input.Token = token
+	input.ID = id
+
+	_, err = h.authClient.UpdateEmailVerificationToken(c, input)
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	r, err := h.mailClient.Confirm(c, &pb.MailConfirmRequest{Url: "bdrop.net/auth/confirmation/" + token, Email: input.Email, Pass: input.Password})
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	if len(r.Message) > 0 {
+		newErrorResponse(c, http.StatusInternalServerError, r.Message)
+		return
+	}
+
+	c.JSON(http.StatusOK, statusResponse{"ok"})
+}
+
 func (h *Handler) resend(c *gin.Context) {
 
 }
